@@ -135,7 +135,7 @@ export class Adapter {
           if (data.text) {
             normalized.type = 'Note';
             return Promise.resolve(normalized);
-          } else if (data.photo || data.video) {
+          } else if (data.photo || data.video || data.audio || data.document) {
             let file = data.photo;
             if (R.is(Array, data.photo)) {
               normalized.type = 'Image';
@@ -149,6 +149,24 @@ export class Adapter {
                 normalized.type = 'Video';
                 normalized.video = sortByFileSize(data.video);
                 file = normalized.video[0];
+              }
+            }
+
+            if (data.audio) {
+              file = data.audio;
+              if (R.is(Array, data.audio)) {
+                normalized.type = 'Audio';
+                normalized.audio = sortByFileSize(data.audio);
+                file = normalized.audio[0];
+              }
+            }
+
+            if (data.document) {
+              file = data.document;
+              if (R.is(Array, data.document)) {
+                normalized.type = 'Document';
+                normalized.document = sortByFileSize(data.document);
+                file = normalized.document[0];
               }
             }
 
@@ -194,13 +212,23 @@ export class Adapter {
 
         const confirm = () => ({ type: 'sent', serviceID: this.serviceId() });
 
-        if (objectType === 'Image' || objectType === 'Video') {
+        if (objectType === 'Image' || objectType === 'Video' || objectType === 'Audio' || objectType === 'Document') {
           const url: string = R.path(['object', 'url'], data) as string;
           if (url.startsWith('http://') || url.startsWith('https://')) {
             const stream = request(url);
             if (objectType === 'Image') {
               return this.session.sendPhoto(toID, stream)
                 .then(confirm);
+            }
+
+            if (objectType === 'Audio') {
+              return this.session.sendAudio(toID, stream)
+                  .then(confirm);
+            }
+
+            if (objectType === 'Document') {
+              return this.session.sendDocument(toID, stream)
+                  .then(confirm);
             }
 
             return this.session.sendVideo(toID, stream)
@@ -238,7 +266,7 @@ export class Adapter {
           }
         }
 
-        return Promise.reject(new Error('Only Note, Image, and Video are supported.'));
+        return Promise.reject(new Error('Only Note, Image, Audio, Document and Video are supported.'));
       });
   }
 

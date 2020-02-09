@@ -1,7 +1,7 @@
 import {
   default as schemas,
   IActivityStream,
-} from '../../../broid-schemas';
+} from '@broid/schemas';
 import { cleanNulls, concat, fileInfo, Logger } from '@broid/utils';
 
 import * as Promise from 'bluebird';
