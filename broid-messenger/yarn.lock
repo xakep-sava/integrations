@@ -2,9 +2,10 @@
 # yarn lockfile v1
 
 
-"@broid/schemas@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@broid/schemas/-/schemas-1.0.1.tgz#3e2a318be8e2789e50730ea37528db19baa71f14"
+"@broid/schemas@^1.1.1":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@broid/schemas/-/schemas-1.1.2.tgz#564fac4d91d8de5c4bd79384180efc63a6cf65a3"
+  integrity sha512-op4Rn47yYLgLYkOYW12Bv1NDCTdRw+l+r83tniDQljVY/vx0u6RBU+piDZB9HG/pxToAalNDwz9But3VqLUZZg==
   dependencies:
     ajv "^5.0.1-beta.1"
     bluebird "^3.4.6"
