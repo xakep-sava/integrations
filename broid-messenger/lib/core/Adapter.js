@@ -24,6 +24,7 @@ class Adapter {
         this.logger = new utils_1.Logger('adapter', this.logLevel);
         this.router = this.setupRouter();
         this.emitter = new events_1.EventEmitter();
+        this.versionAPI = 'v6.0';
         if (obj.http) {
             this.webhookServer = new WebHookServer_1.WebHookServer(obj.http, this.router, this.logLevel);
         }
@@ -177,7 +178,7 @@ class Adapter {
                     json: messageData,
                     method: 'POST',
                     qs: { access_token: this.token },
-                    uri: 'https://graph.facebook.com/v2.8/me/messages',
+                    uri: `https://graph.facebook.com/${this.versionAPI}/me/messages`,
                 })
                     .then(() => ({ type: 'sent', serviceID: this.serviceId() }));
             }
@@ -196,7 +197,7 @@ class Adapter {
             json: true,
             method: 'GET',
             qs: { access_token: this.token, fields },
-            uri: `https://graph.facebook.com/v2.8/${id}`,
+            uri: `https://graph.facebook.com/${this.versionAPI}/${id}`,
         };
         return rp(params)
             .catch((err) => {

@@ -33,6 +33,7 @@ export class Adapter {
   private tokenSecret: string | null;
   private consumerSecret: string | null;
   private webhookServer: WebHookServer;
+  private versionAPI: string;
 
   constructor(obj: IAdapterOptions) {
     this.serviceID = obj && obj.serviceID || uuid.v4();
@@ -46,6 +47,7 @@ export class Adapter {
     this.logger = new Logger('adapter', this.logLevel);
     this.router = this.setupRouter();
     this.emitter = new EventEmitter();
+    this.versionAPI = 'v6.0';
 
     if (obj.http) {
       this.webhookServer = new WebHookServer(obj.http, this.router, this.logLevel);
@@ -225,7 +227,7 @@ export class Adapter {
             json: messageData,
             method: 'POST',
             qs: { access_token: this.token },
-            uri: 'https://graph.facebook.com/v2.8/me/messages',
+            uri: `https://graph.facebook.com/${this.versionAPI}/me/messages`,
           })
           .then(() => ({ type: 'sent', serviceID: this.serviceId() }));
         }
@@ -250,7 +252,7 @@ export class Adapter {
       json: true,
       method: 'GET',
       qs: { access_token: this.token, fields },
-      uri: `https://graph.facebook.com/v2.8/${id}`,
+      uri: `https://graph.facebook.com/${this.versionAPI}/${id}`,
     };
 
     return rp(params)
