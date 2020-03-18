@@ -19,6 +19,7 @@
     "strict-boolean-expressions": false,
     "completed-docs": false,
     "no-unnecessary-qualifier": false,
-    "no-void-expression": false
+    "no-void-expression": false,
+    "no-console": false
   }
 }

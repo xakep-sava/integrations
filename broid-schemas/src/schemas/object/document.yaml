@@ -2,7 +2,7 @@ type: object
 properties:
   type:
     type: string
-    enum: [ Audio, Image, Video ]
+    enum: [ Document ]
   id:
     type: string
   name:
@@ -14,7 +14,7 @@ properties:
   preview:
     type: string
     format: uri
-  mediaType:
+  documentType:
     type: string
   context:
     oneOf:

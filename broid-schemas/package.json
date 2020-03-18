@@ -1,18 +1,18 @@
 {
-  "name": "@broid/schemas",
-  "version": "1.1.2",
+  "name": "@sava.team/broid-schemas",
+  "version": "1.1.4",
   "main": "lib/index.js",
   "license": "AGPL-3.0+",
-  "author": "Broid Team <opensource@broid.ai> (https://broid.ai)",
-  "description": "Validate Broid activity streams 2.0 messages",
+  "author": "SaVa Team <i@sava.team> (https://sava.team)",
+  "description": "Validate SaVa activity streams 2.0 messages",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/broidHQ/integrations.git"
+    "url": "git+ssh://git@github.com:xakep-sava/integrations.git"
   },
   "bugs": {
-    "url": "https://github.com/broidHQ/integrations/issues"
+    "url": "https://github.com/xakep-sava/integrations/issues"
   },
-  "homepage": "https://github.com/broidHQ/integrations/tree/master/broid-schemas#readme",
+  "homepage": "https://github.com/xakep-sava/integrations/tree/master/broid-schemas#readme",
   "keywords": [
     "broid",
     "activity",
