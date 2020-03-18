@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const schemas_1 = require("@broid/schemas");
+const broid_schemas_1 = require("@sava.team/broid-schemas");
 const utils_1 = require("@broid/utils");
 const Promise = require("bluebird");
 const express_1 = require("express");
@@ -150,7 +150,7 @@ class Adapter {
     }
     send(data) {
         this.logger.debug('sending', { message: data });
-        return schemas_1.default(data, 'send')
+        return broid_schemas_1.default(data, 'send')
             .then(() => {
             const options = { parse_mode: 'Markdown' };
             const objectType = R.path(['object', 'type'], data);

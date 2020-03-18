@@ -1,7 +1,7 @@
 import {
   default as schemas,
   IActivityStream,
-} from '@broid/schemas';
+} from '@sava.team/broid-schemas';
 import { cleanNulls, concat, fileInfo, Logger } from '@broid/utils';
 
 import * as Promise from 'bluebird';
@@ -69,12 +69,12 @@ export class Parser {
     return fileInfo(normalized.text, this.logger)
       .then((infos) => {
         const mimetype = infos.mimetype;
-        if (mimetype.startsWith('image/') || mimetype.startsWith('video/')) {
+        if (mimetype.startsWith('image/') || mimetype.startsWith('video/') || mimetype.startsWith('audio/')) {
           activitystreams.object = {
             id: normalized.message_id,
             mediaType: mimetype,
             name: normalized.text.split('/').pop(),
-            type: mimetype.startsWith('image/') ? 'Image' : 'Video',
+            type: mimetype.startsWith('image/') ? 'Image' : mimetype.startsWith('video/') ? 'Video' : 'Audio',
             url: normalized.text,
           };
         } else {

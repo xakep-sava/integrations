@@ -2,13 +2,6 @@
 # yarn lockfile v1
 
 
-"@broid/schemas@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@broid/schemas/-/schemas-1.0.1.tgz#3e2a318be8e2789e50730ea37528db19baa71f14"
-  dependencies:
-    ajv "^5.0.1-beta.1"
-    bluebird "^3.4.6"
-
 "@broid/utils@^1.1.1":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@broid/utils/-/utils-1.1.1.tgz#b79174c2e6898940a7b5b6c0332b0fe67f4c81ca"
@@ -20,6 +13,14 @@
     read-chunk "^2.0.0"
     request "^2.81.0"
     valid-url "^1.0.9"
+
+"@sava.team/broid-schemas@^1.1.4":
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/@sava.team/broid-schemas/-/broid-schemas-1.1.4.tgz#c9c4674a60303f43f2930c91dc47d54f2da834f8"
+  integrity sha512-zywoZrGtSRAaOM09nkJrvpFymUeU8cUUkySM40M7clqTFmEYfshDlc0l3O7eZeETP7U+gjFysE96LE5xSQV2bA==
+  dependencies:
+    ajv "^5.0.1-beta.1"
+    bluebird "^3.4.6"
 
 "@types/bluebird-global@^3.5.1":
   version "3.5.1"
@@ -3752,6 +3753,7 @@ type-name@^2.0.1:
 typescript@~2.2.2:
   version "2.2.2"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.2.2.tgz#606022508479b55ffa368b58fee963a03dfd7b0c"
+  integrity sha1-YGAiUIR5tV/6NotY/uljoD39eww=
 
 uglify-js@^2.6:
   version "2.8.22"

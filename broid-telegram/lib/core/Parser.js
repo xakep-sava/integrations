@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const schemas_1 = require("@broid/schemas");
+const broid_schemas_1 = require("@sava.team/broid-schemas");
 const utils_1 = require("@broid/utils");
 const Promise = require("bluebird");
 const R = require("ramda");
@@ -21,7 +21,7 @@ class Parser {
             this.logger.debug('Type not found.', { parsed });
             return Promise.resolve(null);
         }
-        return schemas_1.default(parsed, 'activity')
+        return broid_schemas_1.default(parsed, 'activity')
             .then(() => parsed)
             .catch((err) => {
             this.logger.error(err);
@@ -56,12 +56,12 @@ class Parser {
         return utils_1.fileInfo(normalized.text, this.logger)
             .then((infos) => {
             const mimetype = infos.mimetype;
-            if (mimetype.startsWith('image/') || mimetype.startsWith('video/')) {
+            if (mimetype.startsWith('image/') || mimetype.startsWith('video/') || mimetype.startsWith('audio/')) {
                 activitystreams.object = {
                     id: normalized.message_id,
                     mediaType: mimetype,
                     name: normalized.text.split('/').pop(),
-                    type: mimetype.startsWith('image/') ? 'Image' : 'Video',
+                    type: mimetype.startsWith('image/') ? 'Image' : mimetype.startsWith('video/') ? 'Video' : 'Audio',
                     url: normalized.text,
                 };
             }

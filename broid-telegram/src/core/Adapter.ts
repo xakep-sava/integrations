@@ -1,4 +1,4 @@
-import schemas from '@broid/schemas';
+import schemas from '@sava.team/broid-schemas';
 import { Logger } from '@broid/utils';
 
 import * as Promise from 'bluebird';
