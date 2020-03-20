@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const broid_schemas_1 = require("@sava.team/broid-schemas");
 const utils_1 = require("@broid/utils");
+const broid_schemas_1 = require("@sava.team/broid-schemas");
 const Promise = require("bluebird");
 const R = require("ramda");
 const uuid = require("uuid");
@@ -23,7 +23,7 @@ class Parser {
         }
         return broid_schemas_1.default(parsed, 'activity')
             .then(() => parsed)
-            .catch((err) => {
+            .catch(err => {
             this.logger.error(err);
             return null;
         });
@@ -37,24 +37,18 @@ class Parser {
         const activitystreams = this.createActivityStream(normalized);
         activitystreams.actor = {
             id: R.toString(R.path(['from', 'id'], normalized)),
-            name: utils_1.concat([
-                R.path(['from', 'first_name'], normalized),
-                R.path(['from', 'last_name'], normalized),
-            ]),
-            type: 'Person',
+            name: utils_1.concat([R.path(['from', 'first_name'], normalized), R.path(['from', 'last_name'], normalized)]),
+            type: 'Person'
         };
         const chatType = R.path(['chat', 'type'], normalized) || '';
         activitystreams.target = {
             id: R.toString(R.path(['chat', 'id'], normalized)),
-            name: R.path(['chat', 'title'], normalized) || utils_1.concat([
-                R.path(['chat', 'first_name'], normalized),
-                R.path(['chat', 'last_name'], normalized),
-            ]),
-            type: R.toLower(chatType) === 'private'
-                ? 'Person' : 'Group',
+            name: R.path(['chat', 'title'], normalized) ||
+                utils_1.concat([R.path(['chat', 'first_name'], normalized), R.path(['chat', 'last_name'], normalized)]),
+            type: R.toLower(chatType) === 'private' ? 'Person' : 'Group'
         };
         return utils_1.fileInfo(normalized.text, this.logger)
-            .then((infos) => {
+            .then(infos => {
             const mimetype = infos.mimetype;
             if (mimetype.startsWith('image/') || mimetype.startsWith('video/') || mimetype.startsWith('audio/')) {
                 activitystreams.object = {
@@ -62,24 +56,24 @@ class Parser {
                     mediaType: mimetype,
                     name: normalized.text.split('/').pop(),
                     type: mimetype.startsWith('image/') ? 'Image' : mimetype.startsWith('video/') ? 'Video' : 'Audio',
-                    url: normalized.text,
+                    url: normalized.text
                 };
             }
             else {
                 activitystreams.object = {
                     content: normalized.text,
                     id: normalized.message_id,
-                    type: 'Note',
+                    type: 'Note'
                 };
             }
             return activitystreams;
         })
-            .then((as2) => {
+            .then(as2 => {
             if (as2.object && normalized.chat_instance) {
                 as2.object.context = {
                     content: normalized.chat_instance.toString(),
                     name: 'chat_instance',
-                    type: 'Object',
+                    type: 'Object'
                 };
             }
             return as2;
@@ -96,9 +90,9 @@ class Parser {
         if (!R.is(String, event.message_id)) {
             event.message_id = R.toString(event.message_id);
         }
-        if (event._event === 'callback_query'
-            || event._event === 'inline_query'
-            || event._event === 'chosen_inline_result') {
+        if (event._event === 'callback_query' ||
+            event._event === 'inline_query' ||
+            event._event === 'chosen_inline_result') {
             let messageID = event.id || event.message_id;
             if (!R.is(String, messageID)) {
                 messageID = R.toString(messageID);
@@ -109,7 +103,7 @@ class Parser {
                 from: event.from,
                 message_id: messageID,
                 text: event.data,
-                timestamp: R.path(['message', 'date'], event) || event.timestamp,
+                timestamp: R.path(['message', 'date'], event) || event.timestamp
             });
         }
         return Promise.resolve(event);
@@ -120,13 +114,13 @@ class Parser {
     createActivityStream(normalized) {
         return {
             '@context': 'https://www.w3.org/ns/activitystreams',
-            'generator': {
+            generator: {
                 id: this.serviceID,
                 name: this.generatorName,
-                type: 'Service',
+                type: 'Service'
             },
-            'published': normalized.timestamp || Math.floor(Date.now() / 1000),
-            'type': 'Create',
+            published: normalized.timestamp || Math.floor(Date.now() / 1000),
+            type: 'Create'
         };
     }
 }

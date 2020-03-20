@@ -1,9 +1,10 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -29,7 +30,7 @@ const broidMessagePrivate = require("./fixtures/broid/parsed/messagePrivate.json
 let parser;
 ava_1.default.before(() => {
     parser = new Parser_1.Parser('telegram', 'test_service', 'info');
-    sinon.stub(utils, 'fileInfo').callsFake((file) => {
+    sinon.stub(utils, 'fileInfo').callsFake(file => {
         if (file.indexOf('jpg') > -1) {
             return Bluebird.resolve({ mimetype: 'image/jpeg' });
         }
@@ -39,59 +40,59 @@ ava_1.default.before(() => {
         return Bluebird.resolve({ mimetype: '' });
     });
 });
-ava_1.default('Parse a null', (t) => __awaiter(this, void 0, void 0, function* () {
+ava_1.default('Parse a null', (t) => __awaiter(void 0, void 0, void 0, function* () {
     const data = parser.parse(null);
     t.deepEqual(yield data, null);
 }));
-ava_1.default('Parse a null', (t) => __awaiter(this, void 0, void 0, function* () {
+ava_1.default('Parse a null', (t) => __awaiter(void 0, void 0, void 0, function* () {
     const data = parser.normalize(null);
     t.deepEqual(yield data, null);
 }));
-ava_1.default('Normalize a simple message', (t) => __awaiter(this, void 0, void 0, function* () {
+ava_1.default('Normalize a simple message', (t) => __awaiter(void 0, void 0, void 0, function* () {
     const data = parser.normalize(telegramMessage);
     t.deepEqual(yield data, broidMessageNorm);
 }));
-ava_1.default('Normalize a message with image', (t) => __awaiter(this, void 0, void 0, function* () {
+ava_1.default('Normalize a message with image', (t) => __awaiter(void 0, void 0, void 0, function* () {
     const data = parser.normalize(telegramMessageImage);
     t.deepEqual(yield data, broidMessageNormImage);
 }));
-ava_1.default('Normalize a private message', (t) => __awaiter(this, void 0, void 0, function* () {
+ava_1.default('Normalize a private message', (t) => __awaiter(void 0, void 0, void 0, function* () {
     const data = parser.normalize(telegramMessagePrivate);
     t.deepEqual(yield data, broidMessageNormPrivate);
 }));
-ava_1.default('Normalize a interactive message callback', (t) => __awaiter(this, void 0, void 0, function* () {
+ava_1.default('Normalize a interactive message callback', (t) => __awaiter(void 0, void 0, void 0, function* () {
     const data = parser.normalize(telegramMessageInteractiveCallback);
     t.deepEqual(yield data, broidMessageNormInteraCallback);
 }));
-ava_1.default('Parse a simple message', (t) => __awaiter(this, void 0, void 0, function* () {
+ava_1.default('Parse a simple message', (t) => __awaiter(void 0, void 0, void 0, function* () {
     const data = parser.parse(broidMessageNorm);
     t.deepEqual(yield data, broidMessage);
 }));
-ava_1.default('Parse a message with image', (t) => __awaiter(this, void 0, void 0, function* () {
+ava_1.default('Parse a message with image', (t) => __awaiter(void 0, void 0, void 0, function* () {
     const data = parser.parse(broidMessageNormImageCompleted);
     t.deepEqual(yield data, broidMessageImage);
 }));
-ava_1.default('Parse a private message', (t) => __awaiter(this, void 0, void 0, function* () {
+ava_1.default('Parse a private message', (t) => __awaiter(void 0, void 0, void 0, function* () {
     const data = parser.parse(broidMessageNormPrivate);
     t.deepEqual(yield data, broidMessagePrivate);
 }));
-ava_1.default('Parse a interactive message callback', (t) => __awaiter(this, void 0, void 0, function* () {
+ava_1.default('Parse a interactive message callback', (t) => __awaiter(void 0, void 0, void 0, function* () {
     const data = parser.parse(broidMessageNormInteraCallback);
     t.deepEqual(yield data, broidMessageInteraCallback);
 }));
-ava_1.default('Validate a simple message', (t) => __awaiter(this, void 0, void 0, function* () {
+ava_1.default('Validate a simple message', (t) => __awaiter(void 0, void 0, void 0, function* () {
     const data = parser.validate(broidMessage);
     t.deepEqual(yield data, broidMessage);
 }));
-ava_1.default('Validate a message with image', (t) => __awaiter(this, void 0, void 0, function* () {
+ava_1.default('Validate a message with image', (t) => __awaiter(void 0, void 0, void 0, function* () {
     const data = parser.validate(broidMessageImage);
     t.deepEqual(yield data, broidMessageImage);
 }));
-ava_1.default('Validate a private message', (t) => __awaiter(this, void 0, void 0, function* () {
+ava_1.default('Validate a private message', (t) => __awaiter(void 0, void 0, void 0, function* () {
     const data = parser.validate(broidMessagePrivate);
     t.deepEqual(yield data, broidMessagePrivate);
 }));
-ava_1.default('Validate a interactive message callback', (t) => __awaiter(this, void 0, void 0, function* () {
+ava_1.default('Validate a interactive message callback', (t) => __awaiter(void 0, void 0, void 0, function* () {
     const data = parser.validate(broidMessageInteraCallback);
     t.deepEqual(yield data, broidMessageInteraCallback);
 }));

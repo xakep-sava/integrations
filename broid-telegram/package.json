@@ -1,21 +1,22 @@
 {
-  "name": "@broid/telegram",
-  "version": "2.1.0",
+  "name": "@sava.team/broid-telegram",
+  "version": "2.1.2",
   "main": "lib/core/index.js",
   "license": "AGPL-3.0+",
-  "author": "Broid Team <opensource@broid.ai> (https://broid.ai)",
+  "author": "SaVa Team <i@sava.team> (https://sava.team)",
   "description": "Convert Telegram messages into Activity Streams 2 with Broid Integration",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/broidHQ/integrations.git"
+    "url": "git+ssh://git@github.com:xakep-sava/integrations.git"
   },
   "bugs": {
-    "url": "https://github.com/broidHQ/integrations/issues"
+    "url": "https://github.com/xakep-sava/integrations/issues"
   },
-  "homepage": "https://github.com/broidHQ/integrations/tree/master/broid-telegram#readme",
+  "homepage": "https://github.com/xakep-sava/integrations/tree/master/broid-telegram#readme",
   "keywords": [
     "telegram",
     "broid",
+    "sava",
     "activity",
     "strams",
     "activity streams 2",
@@ -43,33 +44,33 @@
   "dependencies": {
     "@broid/utils": "^1.1.1",
     "@sava.team/broid-schemas": "^1.1.4",
-    "bluebird": "^3.4.7",
-    "body-parser": "^1.17.1",
-    "express": "^4.15.2",
-    "node-telegram-bot-api": "^0.25.0",
-    "ramda": "^0.23.0",
-    "request": "^2.79.0",
-    "request-promise": "^4.1.1",
+    "ava": "^0.17.0",
+    "bluebird": "^3.7.2",
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "node-telegram-bot-api": "^0.40.0",
+    "ramda": "^0.27.0",
+    "request": "^2.88.2",
+    "request-promise": "^4.2.5",
     "rxjs": "^5.0.2",
-    "sinon": "^2.1.0",
-    "uuid": "^3.1.0"
+    "sinon": "^9.0.1",
+    "uuid": "^7.0.2"
   },
   "devDependencies": {
-    "@types/bluebird": "^3.5.2",
-    "@types/bluebird-global": "^3.5.1",
-    "@types/node": "^7.0.12",
+    "@types/bluebird": "^3.5.30",
+    "@types/bluebird-global": "^3.5.12",
+    "@types/node": "^13.9.2",
     "@types/ramda": "^0.0.5",
-    "@types/uuid": "^3.0.0",
-    "ava": "^0.17.0",
-    "concurrently": "^3.1.0",
-    "copyfiles": "^1.0.0",
-    "nsp": "^2.6.3",
-    "nyc": "^10.1.2",
-    "tslint": "^4.3.1",
-    "tslint-eslint-rules": "^3.5.1",
-    "tslint-microsoft-contrib": "^4.0.1",
-    "typescript": "~2.2.2",
-    "watch": "^1.0.1"
+    "@types/uuid": "^7.0.2",
+    "concurrently": "^5.1.0",
+    "copyfiles": "^2.2.0",
+    "nsp": "^3.2.1",
+    "nyc": "^15.0.0",
+    "tslint": "^6.1.0",
+    "tslint-eslint-rules": "^5.4.0",
+    "tslint-microsoft-contrib": "^6.2.0",
+    "typescript": "^3.8.3",
+    "watch": "^1.0.2"
   },
   "ava": {
     "files": [

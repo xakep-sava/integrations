@@ -1,23 +1,25 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const broid_schemas_1 = require("@sava.team/broid-schemas");
+process.env.NTBA_FIX_319 = '1';
 const utils_1 = require("@broid/utils");
+const broid_schemas_1 = require("@sava.team/broid-schemas");
 const Promise = require("bluebird");
 const express_1 = require("express");
 const TelegramBot = require("node-telegram-bot-api");
 const R = require("ramda");
 const request = require("request-promise");
-const Rx_1 = require("rxjs/Rx");
+const rxjs_1 = require("rxjs");
 const uuid = require("uuid");
 const Parser_1 = require("./Parser");
 const WebHookServer_1 = require("./WebHookServer");
+Promise.config({ cancellation: true });
 const sortByFileSize = R.compose(R.reverse, R.sortBy(R.prop('file_size')));
-const markdown = (str) => str.replace(/[\*_\[`]/g, '\\$&');
+const markdown = str => str.replace(/[\*_\[`]/g, '\\$&');
 class Adapter {
     constructor(obj) {
-        this.serviceID = obj && obj.serviceID || uuid.v4();
-        this.logLevel = obj && obj.logLevel || 'info';
-        this.token = obj && obj.token || null;
+        this.serviceID = (obj && obj.serviceID) || uuid.v4();
+        this.logLevel = (obj && obj.logLevel) || 'info';
+        this.token = (obj && obj.token) || null;
         if (this.token === '') {
             throw new Error('Token should exist.');
         }
@@ -49,38 +51,34 @@ class Adapter {
     }
     connect() {
         if (this.connected) {
-            return Rx_1.Observable.of({ type: 'connected', serviceID: this.serviceId() });
+            return rxjs_1.Observable.of({ type: 'connected', serviceID: this.serviceId() });
         }
         if (!this.token || !this.webhookURL) {
-            return Rx_1.Observable.throw(new Error('Credentials should exist.'));
+            return rxjs_1.Observable.throw(new Error('Credentials should exist.'));
         }
         if (this.webhookServer) {
             this.webhookServer.listen();
         }
-        this.session = new TelegramBot(this.token);
+        this.session = new TelegramBot(this.token, { polling: true });
         this.session.setWebHook(`${this.webhookURL}${this.serviceId()}`);
         this.connected = true;
-        return Rx_1.Observable.of({ type: 'connected', serviceID: this.serviceId() });
+        return rxjs_1.Observable.of({ type: 'connected', serviceID: this.serviceId() });
     }
     disconnect() {
         this.connected = true;
         if (this.webhookServer) {
             return this.webhookServer.close();
         }
-        return Promise.resolve(null);
+        return Promise.resolve({});
     }
     listen() {
         if (!this.session) {
-            return Rx_1.Observable.throw(new Error('No session found.'));
+            return rxjs_1.Observable.throw(new Error('No session found.'));
         }
-        return Rx_1.Observable.merge(Rx_1.Observable.fromEvent(this.session, 'callback_query')
-            .map(R.assoc('_event', 'callback_query')), Rx_1.Observable.fromEvent(this.session, 'inline_query')
-            .map(R.assoc('_event', 'inline_query')), Rx_1.Observable.fromEvent(this.session, 'chosen_inline_result')
-            .map(R.assoc('_event', 'chosen_inline_result')), Rx_1.Observable.fromEvent(this.session, 'message')
-            .map(R.assoc('_event', 'message')))
-            .switchMap((value) => {
-            return Rx_1.Observable.of(value)
-                .mergeMap((event) => this.parser.normalize(event))
+        return rxjs_1.Observable.merge(rxjs_1.Observable.fromEvent(this.session, 'callback_query').map(R.assoc('_event', 'callback_query')), rxjs_1.Observable.fromEvent(this.session, 'inline_query').map(R.assoc('_event', 'inline_query')), rxjs_1.Observable.fromEvent(this.session, 'chosen_inline_result').map(R.assoc('_event', 'chosen_inline_result')), rxjs_1.Observable.fromEvent(this.session, 'message').map(R.assoc('_event', 'message')))
+            .switchMap(value => {
+            return rxjs_1.Observable.of(value)
+                .mergeMap(event => this.parser.normalize(event))
                 .mergeMap((data) => {
                 const normalized = data;
                 if (data.text) {
@@ -119,8 +117,7 @@ class Adapter {
                         }
                     }
                     const fileID = R.path(['file_id'], file);
-                    return this.session.getFileLink(fileID)
-                        .then((link) => {
+                    return this.session.getFileLink(fileID).then(link => {
                         normalized.text = link;
                         return normalized;
                     });
@@ -128,57 +125,56 @@ class Adapter {
                 this.logger.warning(new Error('This event is not supported.'));
                 return Promise.resolve(null);
             })
-                .mergeMap((normalized) => this.parser.parse(normalized))
-                .mergeMap((parsed) => this.parser.validate(parsed))
-                .mergeMap((validated) => {
+                .mergeMap(normalized => this.parser.parse(normalized))
+                .mergeMap(parsed => this.parser.validate(parsed))
+                .mergeMap(validated => {
                 if (!validated) {
-                    return Rx_1.Observable.empty();
+                    return rxjs_1.Observable.empty();
                 }
                 return Promise.resolve(validated);
             })
-                .catch((err) => {
+                .catch(err => {
                 this.logger.error('Caught Error, continuing', err);
-                return Rx_1.Observable.of(err);
+                return rxjs_1.Observable.of(err);
             });
         })
-            .mergeMap((value) => {
+            .mergeMap(value => {
             if (value instanceof Error) {
-                return Rx_1.Observable.empty();
+                return rxjs_1.Observable.empty();
             }
             return Promise.resolve(value);
         });
     }
     send(data) {
         this.logger.debug('sending', { message: data });
-        return broid_schemas_1.default(data, 'send')
-            .then(() => {
+        return broid_schemas_1.default(data, 'send').then(() => {
             const options = { parse_mode: 'Markdown' };
             const objectType = R.path(['object', 'type'], data);
-            const toID = R.path(['to', 'id'], data)
-                || R.path(['to', 'name'], data);
+            const toID = R.path(['to', 'id'], data) || R.path(['to', 'name'], data);
             const confirm = () => ({ type: 'sent', serviceID: this.serviceId() });
             if (objectType === 'Image' || objectType === 'Video' || objectType === 'Audio' || objectType === 'Document') {
                 const url = R.path(['object', 'url'], data);
                 if (url.startsWith('http://') || url.startsWith('https://')) {
                     const stream = request(url);
                     if (objectType === 'Image') {
-                        return this.session.sendPhoto(toID, stream)
-                            .then(confirm);
+                        this.session.sendChatAction(toID, 'upload_photo');
+                        return this.session.sendPhoto(toID, stream).then(confirm);
                     }
                     if (objectType === 'Audio') {
-                        return this.session.sendAudio(toID, stream)
-                            .then(confirm);
+                        this.session.sendChatAction(toID, 'upload_audio');
+                        return this.session.sendAudio(toID, stream).then(confirm);
                     }
                     if (objectType === 'Document') {
-                        return this.session.sendDocument(toID, stream)
-                            .then(confirm);
+                        this.session.sendChatAction(toID, 'upload_document');
+                        return this.session.sendDocument(toID, stream).then(confirm);
                     }
-                    return this.session.sendVideo(toID, stream)
-                        .then(confirm);
+                    this.session.sendChatAction(toID, 'upload_video');
+                    return this.session.sendVideo(toID, stream).then(confirm);
                 }
                 return Promise.reject(new Error('File path should be URI'));
             }
             else if (objectType === 'Note') {
+                this.session.sendChatAction(toID, 'typing');
                 const attachmentButtons = R.filter((attachment) => attachment.type === 'Button', R.path(['object', 'attachment'], data) || []);
                 let buttons = R.map((button) => {
                     if (R.contains(button.mediaType, ['text/html'])) {
@@ -194,8 +190,7 @@ class Adapter {
                 }
                 const content = R.path(['object', 'content'], data);
                 if (content && content !== '') {
-                    return this.session.sendMessage(toID, markdown(content), options)
-                        .then(confirm);
+                    return this.session.sendMessage(toID, markdown(content), options).then(confirm);
                 }
             }
             return Promise.reject(new Error('Only Note, Image, Audio, Document and Video are supported.'));

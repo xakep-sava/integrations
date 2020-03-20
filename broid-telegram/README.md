@@ -1,20 +1,14 @@
-[npm]: https://img.shields.io/badge/npm-broid-green.svg?style=flat
-[npm-url]: https://www.npmjs.com/org/broid
+[npm]: https://img.shields.io/badge/npm-sava.team-green.svg?style=flat
+[npm-url]: https://www.npmjs.com/org/sava.team
 
-[node]: https://img.shields.io/node/v/@broid/telegram.svg
+[node]: https://img.shields.io/node/v/@sava.team/broid-telegram.svg
 [node-url]: https://nodejs.org
 
 [deps]: https://img.shields.io/badge/dependencies-checked-green.svg?style=flat
 [deps-url]: #integrations
 
-[tests]: https://img.shields.io/travis/broidHQ/integrations/master.svg
-[tests-url]: https://travis-ci.org/broidHQ/integrations
-
-[bithound]: https://img.shields.io/bithound/code/github/broidHQ/integrations.svg
-[bithound-url]: https://www.bithound.io/github/broidHQ/integrations
-
-[bithoundscore]: https://www.bithound.io/github/broidHQ/integrations/badges/score.svg
-[bithoundscore-url]: https://www.bithound.io/github/broidHQ/integrations
+[tests]: https://img.shields.io/travis/xakep-sava/integrations/master.svg
+[tests-url]: https://travis-ci.org/xakep-sava/integrations
 
 [nsp-checked]: https://img.shields.io/badge/nsp-checked-green.svg?style=flat
 [nsp-checked-url]: https://nodesecurity.io
@@ -23,18 +17,16 @@
 [![node][node]][node-url]
 [![deps][deps]][deps-url]
 [![tests][tests]][tests-url]
-[![bithound][bithound]][bithound-url]
-[![bithoundscore][bithoundscore]][bithoundscore-url]
 [![nsp-checked][nsp-checked]][nsp-checked-url]
 
-# Broid Telegram Integration
+# Telegram Integration
 
-Broid Integrations is an open source project providing a suite of Activity Streams 2 libraries for unified communications among a vast number of communication platforms.
+Integrations is an open source project providing a suite of Activity Streams 2 libraries for unified communications among a vast number of communication platforms.
 
 > Connect your App to Multiple Messaging Channels with  One OpenSource Language.
 
-[![gitter](https://badges.gitter.im/broidHQ/broid.svg)](https://t.broid.ai/c/Blwjlw?utm_source=github&utm_medium=readme&utm_campaign=top&link=gitter)
-[![slackin](https://slackin.broid.ai/badge.svg)](https://slackin.broid.ai)
+[![gitter](https://badges.gitter.im/savateam/community.svg)](https://gitter.im/savateam/community)
+[![slackin](https://img.shields.io/badge/site-sava.team-green?style=flat)](https://sava.team)
 
 ## Message types supported
 
