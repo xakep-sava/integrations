@@ -25,6 +25,7 @@
     "import-name": false,
     "no-null-keyword": false,
     "newline-before-return": false,
-    "newline-per-chained-call": false
+    "newline-per-chained-call": false,
+    "no-parameter-reassignment": false
   }
 }
