@@ -4,7 +4,7 @@ properties:
     type: string
   type:
     type: string
-    enum: [ Group ]
+    enum: [Group]
   name:
     type: string
-required: [ type ]
+required: [type]

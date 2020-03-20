@@ -2,13 +2,13 @@ type: object
 properties:
   type:
     type: string
-    enum: [ Activity ]
+    enum: [Activity]
   id:
     type: string
   content:
     type: string
   context:
     oneOf:
-      - $ref: "http://schemas.broid.ai/object/object.json"
-      - { type: array, items: { $ref: "http://schemas.broid.ai/object/object.json" } }
-required: [ type, content ]
+      - $ref: 'http://schemas.broid.ai/object/object.json'
+      - { type: array, items: { $ref: 'http://schemas.broid.ai/object/object.json' } }
+required: [type, content]

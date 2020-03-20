@@ -6,10 +6,10 @@ function default_1(data, schema) {
     const BASE_URL = 'http://schemas.broid.ai/';
     const ajv = new Ajv({
         allErrors: true,
-        extendRefs: true,
+        extendRefs: true
     });
     const schemas = require('./schemas');
-    schemas.forEach((schemaName) => ajv.addSchema(require(`./schemas/${schemaName}`), schemaName));
+    schemas.forEach(schemaName => ajv.addSchema(require(`./schemas/${schemaName}`), schemaName));
     if (schema.indexOf('http') < 0) {
         schema = `${BASE_URL}${schema}.json`;
     }

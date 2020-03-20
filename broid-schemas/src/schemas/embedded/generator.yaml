@@ -1,10 +1,10 @@
 type: object
 properties:
-  "id":
+  'id':
     type: string
   type:
     type: string
-    enum: [ Service ]
+    enum: [Service]
   name:
     type: string
-required: [ id, type, name ]
+required: [id, type, name]

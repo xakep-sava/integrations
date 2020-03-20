@@ -2,7 +2,7 @@ type: object
 properties:
   type:
     type: string
-    enum: [ Document ]
+    enum: [Document]
   id:
     type: string
   name:
@@ -18,10 +18,10 @@ properties:
     type: string
   context:
     oneOf:
-      - $ref: "http://schemas.broid.ai/object/object.json"
-      - { type: array, items: { $ref: "http://schemas.broid.ai/object/object.json" } }
+      - $ref: 'http://schemas.broid.ai/object/object.json'
+      - { type: array, items: { $ref: 'http://schemas.broid.ai/object/object.json' } }
   tag:
     oneOf:
-      - $ref: "http://schemas.broid.ai/embedded/tag.json"
-      - { type: array, items: { $ref: "http://schemas.broid.ai/embedded/tag.json" } }
-required: [ type, url ]
+      - $ref: 'http://schemas.broid.ai/embedded/tag.json'
+      - { type: array, items: { $ref: 'http://schemas.broid.ai/embedded/tag.json' } }
+required: [type, url]

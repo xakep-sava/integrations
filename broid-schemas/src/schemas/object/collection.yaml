@@ -2,11 +2,11 @@ type: object
 properties:
   type:
     type: string
-    enum: [ Collection ]
+    enum: [Collection]
   name:
     type: string
   id:
-    type: string    
+    type: string
   content:
     type: string
   totalItems:
@@ -15,12 +15,12 @@ properties:
     type: array
     items:
       oneOf:
-        - $ref: "http://schemas.broid.ai/object/note.json"
-          required: [ type, content ]
-        - $ref: "http://schemas.broid.ai/object/media.json"
-          required: [ type, url ]
-        - $ref: "http://schemas.broid.ai/object/document.json"
-          required: [ type, url ]
-        - $ref: "http://schemas.broid.ai/object/place.json"
-          required: [ type, latitude, longitude ]
-required: [ type, items ]
+        - $ref: 'http://schemas.broid.ai/object/note.json'
+          required: [type, content]
+        - $ref: 'http://schemas.broid.ai/object/media.json'
+          required: [type, url]
+        - $ref: 'http://schemas.broid.ai/object/document.json'
+          required: [type, url]
+        - $ref: 'http://schemas.broid.ai/object/place.json'
+          required: [type, latitude, longitude]
+required: [type, items]

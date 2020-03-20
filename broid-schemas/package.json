@@ -1,10 +1,10 @@
 {
   "name": "@sava.team/broid-schemas",
-  "version": "1.1.4",
+  "version": "1.1.6",
   "main": "lib/index.js",
   "license": "AGPL-3.0+",
   "author": "SaVa Team <i@sava.team> (https://sava.team)",
-  "description": "Validate SaVa activity streams 2.0 messages",
+  "description": "Validate Broid activity streams 2.0 messages",
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com:xakep-sava/integrations.git"
@@ -15,6 +15,7 @@
   "homepage": "https://github.com/xakep-sava/integrations/tree/master/broid-schemas#readme",
   "keywords": [
     "broid",
+    "sava",
     "activity",
     "strams",
     "activity streams 2",
@@ -39,23 +40,23 @@
     "watch": "concurrently --kill-others \"yarn run lint:watch\" \"yarn run tsc:watch\""
   },
   "dependencies": {
-    "ajv": "^5.0.1-beta.1",
-    "bluebird": "^3.4.6"
+    "ajv": "^6.12.0",
+    "bluebird": "^3.7.2"
   },
   "devDependencies": {
-    "@types/bluebird": "^3.5.2",
-    "@types/bluebird-global": "^3.5.1",
-    "@types/node": "^7.0.11",
-    "@types/ramda": "^0.0.5",
-    "@types/uuid": "^3.0.0",
-    "concurrently": "^3.1.0",
-    "js-yaml": "^3.8.1",
+    "@types/bluebird": "^3.5.30",
+    "@types/bluebird-global": "^3.5.12",
+    "@types/node": "^13.9.2",
+    "@types/ramda": "^0.26.44",
+    "@types/uuid": "^7.0.2",
+    "concurrently": "^5.1.0",
+    "js-yaml": "^3.13.1",
     "json-minify": "^1.0.0",
-    "nsp": "^2.6.3",
-    "tslint": "^4.4.2",
-    "tslint-eslint-rules": "^3.5.1",
-    "tslint-microsoft-contrib": "^4.0.1",
-    "typescript": "^2.7.1",
-    "watch": "^1.0.1"
+    "nsp": "^3.2.1",
+    "tslint": "^6.1.0",
+    "tslint-eslint-rules": "^5.4.0",
+    "tslint-microsoft-contrib": "^6.2.0",
+    "typescript": "^3.8.3",
+    "watch": "^1.0.2"
   }
 }

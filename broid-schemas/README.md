@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/broidHQ/integrations.svg?branch=master)](https://travis-ci.org/broidHQ/integrations) [![npm version](https://img.shields.io/npm/v/@broid/schemas.svg?style=flat)](https://www.npmjs.com/package/@broid/schemas) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/broidHQ/integrations)
+#[![Build Status](https://travis-ci.org/xakep-sava/integrations.svg?branch=master)](https://travis-ci.org/xakep-sava/integrations) [![npm version](https://img.shields.io/npm/v/@sava.team/broid-schemas.svg?style=flat)](https://www.npmjs.com/package/@sava.team/broid-schemas) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/xakep-sava/integrations)
 
 # Broid Schemas
 
@@ -6,10 +6,13 @@ Broid Integrations is an open source project providing a suite of Activity Strea
 
 > Connect your App to Multiple Messaging Channels with  One OpenSource Language.
 
+[![gitter](https://badges.gitter.im/savateam/community.svg)](https://gitter.im/savateam/community)
+[![slackin](https://img.shields.io/badge/site-sava.team-green?style=flat)](https://sava.team?utm_source=github&utm_medium=readme&utm_campaign=top&link=site)
+
 ## Schemas
 
 Broid integrations support Simple, Rich, Video and Image messages.
-Theses schemas use [activitystreams 2.0](https://www.w3.org/TR/activitystreams-core/) specifications. If using Typescript, you can use the interfaces supplied [here](https://github.com/broidHQ/integrations/blob/master/broid-schemas/src/index.ts) to simplify your work.
+Theses schemas use [activitystreams 2.0](https://www.w3.org/TR/activitystreams-core/) specifications. If using Typescript, you can use the interfaces supplied [here](https://github.com/xakep-sava/integrations/blob/master/broid-schemas/src/index.ts) to simplify your work.
 
 ### Examples
 
@@ -491,7 +494,7 @@ See [CONTRIBUTE.md](../CONTRIBUTE.md)
 
 ## Copyright & License
 
-Copyright (c) 2016-2017 Broid.ai
+Copyright (c) 2020 SaVa.Team
 
 This project is licensed under the AGPL 3, which can be
 [found here](https://www.gnu.org/licenses/agpl-3.0.en.html).

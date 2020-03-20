@@ -6,4 +6,4 @@ properties:
     type: string
   type:
     type: string
-required: [ id, type, name ]
+required: [id, type, name]
