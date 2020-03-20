@@ -20,6 +20,11 @@
     "completed-docs": false,
     "no-unnecessary-qualifier": false,
     "no-void-expression": false,
-    "no-console": false
+    "no-console": false,
+    "semicolon": [false, "always"],
+    "import-name": false,
+    "no-null-keyword": false,
+    "newline-before-return": false,
+    "newline-per-chained-call": false
   }
 }
