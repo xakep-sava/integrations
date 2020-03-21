@@ -1,27 +1,27 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const schemas_1 = require("@broid/schemas");
-const utils_1 = require("@broid/utils");
+const broid_schemas_1 = require("@sava.team/broid-schemas");
+const broid_utils_1 = require("@sava.team/broid-utils");
 const Promise = require("bluebird");
 const events_1 = require("events");
 const express_1 = require("express");
 const R = require("ramda");
 const rp = require("request-promise");
-const Rx_1 = require("rxjs/Rx");
+const rxjs_1 = require("rxjs");
 const uuid = require("uuid");
 const helpers_1 = require("./helpers");
 const Parser_1 = require("./Parser");
 const WebHookServer_1 = require("./WebHookServer");
 class Adapter {
     constructor(obj) {
-        this.serviceID = obj && obj.serviceID || uuid.v4();
-        this.logLevel = obj && obj.logLevel || 'info';
-        this.token = obj && obj.token || null;
-        this.tokenSecret = obj && obj.tokenSecret || null;
-        this.consumerSecret = obj && obj.consumerSecret || null;
+        this.serviceID = (obj && obj.serviceID) || uuid.v4();
+        this.logLevel = (obj && obj.logLevel) || 'info';
+        this.token = (obj && obj.token) || null;
+        this.tokenSecret = (obj && obj.tokenSecret) || null;
+        this.consumerSecret = (obj && obj.consumerSecret) || null;
         this.storeUsers = new Map();
         this.parser = new Parser_1.Parser(this.serviceName(), this.serviceID, this.logLevel);
-        this.logger = new utils_1.Logger('adapter', this.logLevel);
+        this.logger = new broid_utils_1.Logger('adapter', this.logLevel);
         this.router = this.setupRouter();
         this.emitter = new events_1.EventEmitter();
         this.versionAPI = 'v6.0';
@@ -49,63 +49,60 @@ class Adapter {
     }
     connect() {
         if (this.connected) {
-            return Rx_1.Observable.of({ type: 'connected', serviceID: this.serviceId() });
+            return rxjs_1.Observable.of({ type: 'connected', serviceID: this.serviceId() });
         }
         if (!this.token || !this.tokenSecret) {
-            return Rx_1.Observable.throw(new Error('Credentials should exist.'));
+            return rxjs_1.Observable.throw(new Error('Credentials should exist.'));
         }
         if (this.webhookServer) {
             this.webhookServer.listen();
         }
         this.connected = true;
-        return Rx_1.Observable.of({ type: 'connected', serviceID: this.serviceId() });
+        return rxjs_1.Observable.of({ type: 'connected', serviceID: this.serviceId() });
     }
     disconnect() {
         this.connected = false;
         return Promise.resolve(null);
     }
     listen() {
-        return Rx_1.Observable.fromEvent(this.emitter, 'message')
-            .switchMap((value) => {
-            return Rx_1.Observable.of(value)
+        return rxjs_1.Observable.fromEvent(this.emitter, 'message')
+            .switchMap(value => {
+            return rxjs_1.Observable.of(value)
                 .mergeMap((event) => this.parser.normalize(event))
                 .mergeMap((messages) => {
                 if (!messages || R.isEmpty(messages)) {
-                    return Rx_1.Observable.empty();
+                    return rxjs_1.Observable.empty();
                 }
-                return Rx_1.Observable.from(messages);
+                return rxjs_1.Observable.from(messages);
             })
-                .mergeMap((message) => this.user(message.author)
-                .then((author) => R.assoc('authorInformation', author, message)))
-                .mergeMap((normalized) => this.parser.parse(normalized))
-                .mergeMap((parsed) => this.parser.validate(parsed))
-                .mergeMap((validated) => {
+                .mergeMap((message) => this.user(message.author).then(author => R.assoc('authorInformation', author, message)))
+                .mergeMap(normalized => this.parser.parse(normalized))
+                .mergeMap(parsed => this.parser.validate(parsed))
+                .mergeMap(validated => {
                 if (!validated) {
-                    return Rx_1.Observable.empty();
+                    return rxjs_1.Observable.empty();
                 }
                 return Promise.resolve(validated);
             })
-                .catch((err) => {
+                .catch(err => {
                 this.logger.error('Caught Error, continuing', err);
-                return Rx_1.Observable.of(err);
+                return rxjs_1.Observable.of(err);
             });
         })
-            .mergeMap((value) => {
+            .mergeMap(value => {
             if (value instanceof Error) {
-                return Rx_1.Observable.empty();
+                return rxjs_1.Observable.empty();
             }
             return Promise.resolve(value);
         });
     }
     send(data) {
         this.logger.debug('sending', { message: data });
-        return schemas_1.default(data, 'send')
-            .then(() => {
-            const toID = R.path(['to', 'id'], data) ||
-                R.path(['to', 'name'], data);
+        return broid_schemas_1.default(data, 'send').then(() => {
+            const toID = R.path(['to', 'id'], data) || R.path(['to', 'name'], data);
             const dataType = R.path(['object', 'type'], data);
             let messageData = {
-                recipient: { id: toID },
+                recipient: { id: toID }
             };
             if (dataType === 'Collection') {
                 const items = R.filter((item) => item.type === 'Image', R.path(['object', 'items'], data));
@@ -114,16 +111,16 @@ class Adapter {
                     attachment: {
                         payload: {
                             elements,
-                            template_type: 'generic',
+                            template_type: 'generic'
                         },
-                        type: 'template',
-                    },
+                        type: 'template'
+                    }
                 }, messageData);
             }
             else if (dataType === 'Note' || dataType === 'Image' || dataType === 'Video') {
                 messageData = R.assoc('message', {
                     attachment: {},
-                    text: '',
+                    text: ''
                 }, messageData);
                 const content = R.path(['object', 'content'], data);
                 const name = R.path(['object', 'name'], data) || content;
@@ -132,11 +129,7 @@ class Adapter {
                 const fButtons = helpers_1.createButtons(buttons);
                 if (dataType === 'Image' || dataType === 'Video') {
                     if (dataType === 'Video' && R.isEmpty(fButtons)) {
-                        messageData.message.text = utils_1.concat([
-                            name || '',
-                            content || '',
-                            R.path(['object', 'url'], data),
-                        ]);
+                        messageData.message.text = broid_utils_1.concat([name || '', content || '', R.path(['object', 'url'], data)]);
                     }
                     else {
                         messageData.message.attachment = helpers_1.createCard(name, content, fButtons, R.path(['object', 'url'], data));
@@ -149,8 +142,7 @@ class Adapter {
                         messageData.message.text = content;
                     }
                     else if (!R.isEmpty(fButtons)) {
-                        messageData
-                            .message.attachment = helpers_1.createTextWithButtons(name, content, fButtons);
+                        messageData.message.attachment = helpers_1.createTextWithButtons(name, content, fButtons);
                     }
                     else {
                         messageData.message.text = content;
@@ -178,9 +170,8 @@ class Adapter {
                     json: messageData,
                     method: 'POST',
                     qs: { access_token: this.token },
-                    uri: `https://graph.facebook.com/${this.versionAPI}/me/messages`,
-                })
-                    .then(() => ({ type: 'sent', serviceID: this.serviceId() }));
+                    uri: `https://graph.facebook.com/${this.versionAPI}/me/messages`
+                }).then(() => ({ type: 'sent', serviceID: this.serviceId() }));
             }
             return Promise.reject(new Error('Only Note, Image, and Video are supported.'));
         });
@@ -197,10 +188,10 @@ class Adapter {
             json: true,
             method: 'GET',
             qs: { access_token: this.token, fields },
-            uri: `https://graph.facebook.com/${this.versionAPI}/${id}`,
+            uri: `https://graph.facebook.com/${this.versionAPI}/${id}`
         };
         return rp(params)
-            .catch((err) => {
+            .catch(err => {
             if (err.message && err.message.includes('nonexisting field')) {
                 params.qs.fields = 'name';
                 return rp(params);
@@ -237,7 +228,7 @@ class Adapter {
             if (verify) {
                 const event = {
                     request: req,
-                    response: res,
+                    response: res
                 };
                 this.emitter.emit('message', event);
                 res.sendStatus(200);

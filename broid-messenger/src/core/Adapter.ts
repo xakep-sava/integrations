@@ -1,12 +1,12 @@
-import schemas from '@broid/schemas';
-import { concat, Logger } from '@broid/utils';
-import * as Promise from 'bluebird';
-import { EventEmitter } from 'events';
-import { Router } from 'express';
-import * as R from 'ramda';
-import * as rp from 'request-promise';
-import { Observable } from 'rxjs/Rx';
-import * as uuid from 'uuid';
+import schemas from '@sava.team/broid-schemas'
+import { concat, Logger } from '@sava.team/broid-utils'
+import * as Promise from 'bluebird'
+import { EventEmitter } from 'events'
+import { Router } from 'express'
+import * as R from 'ramda'
+import * as rp from 'request-promise'
+import { Observable } from 'rxjs'
+import * as uuid from 'uuid'
 
 import {
   createButtons,
@@ -14,237 +14,234 @@ import {
   createElement,
   createQuickReplies,
   createTextWithButtons,
-  isXHubSignatureValid,
-} from './helpers';
-import { IAdapterOptions, IWebHookEvent } from './interfaces';
-import { Parser } from './Parser';
-import { WebHookServer } from './WebHookServer';
+  isXHubSignatureValid
+} from './helpers'
+import { IAdapterOptions, IWebHookEvent } from './interfaces'
+import { Parser } from './Parser'
+import { WebHookServer } from './WebHookServer'
 
 export class Adapter {
-  private connected: boolean;
-  private emitter: EventEmitter;
-  private logLevel: string;
-  private logger: Logger;
-  private parser: Parser;
-  private router: Router;
-  private serviceID: string;
-  private storeUsers: Map<string, object>;
-  private token: string | null;
-  private tokenSecret: string | null;
-  private consumerSecret: string | null;
-  private webhookServer: WebHookServer;
-  private versionAPI: string;
+  private connected: boolean
+  private emitter: EventEmitter
+  private logLevel: string
+  private logger: Logger
+  private parser: Parser
+  private router: Router
+  private serviceID: string
+  private storeUsers: Map<string, object>
+  private token: string | null
+  private tokenSecret: string | null
+  private consumerSecret: string | null
+  private webhookServer: WebHookServer
+  private versionAPI: string
 
   constructor(obj: IAdapterOptions) {
-    this.serviceID = obj && obj.serviceID || uuid.v4();
-    this.logLevel = obj && obj.logLevel || 'info';
-    this.token = obj && obj.token || null;
-    this.tokenSecret = obj && obj.tokenSecret || null;
-    this.consumerSecret = obj && obj.consumerSecret || null;
-    this.storeUsers = new Map();
+    this.serviceID = (obj && obj.serviceID) || uuid.v4()
+    this.logLevel = (obj && obj.logLevel) || 'info'
+    this.token = (obj && obj.token) || null
+    this.tokenSecret = (obj && obj.tokenSecret) || null
+    this.consumerSecret = (obj && obj.consumerSecret) || null
+    this.storeUsers = new Map()
 
-    this.parser = new Parser(this.serviceName(), this.serviceID, this.logLevel);
-    this.logger = new Logger('adapter', this.logLevel);
-    this.router = this.setupRouter();
-    this.emitter = new EventEmitter();
-    this.versionAPI = 'v6.0';
+    this.parser = new Parser(this.serviceName(), this.serviceID, this.logLevel)
+    this.logger = new Logger('adapter', this.logLevel)
+    this.router = this.setupRouter()
+    this.emitter = new EventEmitter()
+    this.versionAPI = 'v6.0'
 
     if (obj.http) {
-      this.webhookServer = new WebHookServer(obj.http, this.router, this.logLevel);
+      this.webhookServer = new WebHookServer(obj.http, this.router, this.logLevel)
     }
   }
 
   // Return list of users information
   public users(): Promise<Map<string, object>> {
-    return Promise.resolve(this.storeUsers);
+    return Promise.resolve(this.storeUsers)
   }
 
   // Return list of channels information
   public channels(): Promise<Error> {
-    return Promise.reject(new Error('Not supported'));
+    return Promise.reject(new Error('Not supported'))
   }
 
   // Return the service ID of the current instance
   public serviceId(): string {
-    return this.serviceID;
+    return this.serviceID
   }
 
   public serviceName(): string {
-    return 'messenger';
+    return 'messenger'
   }
 
   public getRouter(): Router | null {
     if (this.webhookServer) {
-      return null;
+      return null
     }
-    return this.router;
+    return this.router
   }
 
   // Connect to Messenger
   // Start the webhook server
   public connect(): Observable<object> {
     if (this.connected) {
-      return Observable.of({ type: 'connected', serviceID: this.serviceId() });
+      return Observable.of({ type: 'connected', serviceID: this.serviceId() })
     }
 
     if (!this.token || !this.tokenSecret) {
-      return Observable.throw(new Error('Credentials should exist.'));
+      return Observable.throw(new Error('Credentials should exist.'))
     }
 
     if (this.webhookServer) {
-      this.webhookServer.listen();
+      this.webhookServer.listen()
     }
 
-    this.connected = true;
-    return Observable.of({ type: 'connected', serviceID: this.serviceId() });
+    this.connected = true
+    return Observable.of({ type: 'connected', serviceID: this.serviceId() })
   }
 
   public disconnect(): Promise<null> {
-    this.connected = false;
-    return Promise.resolve(null);
+    this.connected = false
+    return Promise.resolve(null)
   }
 
   // Listen 'message' event from Messenger
   public listen(): Observable<object> {
     return Observable.fromEvent(this.emitter, 'message')
-      .switchMap((value) => {
+      .switchMap(value => {
         return Observable.of(value)
           .mergeMap((event: IWebHookEvent) => this.parser.normalize(event))
           .mergeMap((messages: any) => {
-            if (!messages || R.isEmpty(messages)) { return Observable.empty(); }
-            return Observable.from(messages);
+            if (!messages || R.isEmpty(messages)) {
+              return Observable.empty()
+            }
+            return Observable.from(messages)
           })
-          .mergeMap((message: any) => this.user(message.author)
-            .then((author) => R.assoc('authorInformation', author, message)))
-          .mergeMap((normalized) => this.parser.parse(normalized))
-          .mergeMap((parsed) => this.parser.validate(parsed))
-          .mergeMap((validated) => {
-            if (!validated) { return Observable.empty(); }
-            return Promise.resolve(validated);
+          .mergeMap((message: any) =>
+            this.user(message.author).then(author => R.assoc('authorInformation', author, message))
+          )
+          .mergeMap(normalized => this.parser.parse(normalized))
+          .mergeMap(parsed => this.parser.validate(parsed))
+          .mergeMap(validated => {
+            if (!validated) {
+              return Observable.empty()
+            }
+            return Promise.resolve(validated)
           })
-          .catch((err) => {
-            this.logger.error('Caught Error, continuing', err);
+          .catch(err => {
+            this.logger.error('Caught Error, continuing', err)
             // Return an empty Observable which gets collapsed in the output
-            return Observable.of(err);
-          });
+            return Observable.of(err)
+          })
       })
-      .mergeMap((value) => {
+      .mergeMap(value => {
         if (value instanceof Error) {
-          return Observable.empty();
+          return Observable.empty()
         }
-        return Promise.resolve(value);
-      });
+        return Promise.resolve(value)
+      })
   }
 
   public send(data: object): Promise<object | Error> {
-    this.logger.debug('sending', { message: data });
+    this.logger.debug('sending', { message: data })
 
-    return schemas(data, 'send')
-      .then(() => {
-        const toID: string = R.path(['to', 'id'], data) as string ||
-          R.path(['to', 'name'], data) as string;
-        const dataType: string = R.path(['object', 'type'], data) as string;
+    return schemas(data, 'send').then(() => {
+      const toID: string = (R.path(['to', 'id'], data) as string) || (R.path(['to', 'name'], data) as string)
+      const dataType: string = R.path(['object', 'type'], data) as string
 
-        let messageData: any = {
-          recipient: { id: toID },
-        };
+      let messageData: any = {
+        recipient: { id: toID }
+      }
 
-        if (dataType === 'Collection') {
-          const items: any = R.filter((item: any) =>
-            item.type === 'Image', R.path(['object', 'items'], data) as any);
-          const elements = R.map(createElement, items);
+      if (dataType === 'Collection') {
+        const items: any = R.filter((item: any) => item.type === 'Image', R.path(['object', 'items'], data) as any)
+        const elements = R.map(createElement, items)
 
-          messageData = R.assoc('message', {
+        messageData = R.assoc(
+          'message',
+          {
             attachment: {
               payload: {
                 elements,
-                template_type: 'generic',
+                template_type: 'generic'
               },
-              type: 'template',
-            },
-          }, messageData);
-
-        } else if (dataType === 'Note' || dataType === 'Image' || dataType === 'Video') {
-          messageData = R.assoc('message', {
+              type: 'template'
+            }
+          },
+          messageData
+        )
+      } else if (dataType === 'Note' || dataType === 'Image' || dataType === 'Video') {
+        messageData = R.assoc(
+          'message',
+          {
             attachment: {},
-            text: '',
-          }, messageData);
+            text: ''
+          },
+          messageData
+        )
 
-          const content: string = R.path(['object', 'content'], data) as string;
-          const name: string = R.path(['object', 'name'], data) as string || content;
-          const attachments: any[] = R.path(['object', 'attachment'], data) as any[] || [];
-          const buttons = R.filter(
-            (attachment: any) => attachment.type === 'Button' || attachment.type === 'Link',
-            attachments);
-          const fButtons = createButtons(buttons);
+        const content: string = R.path(['object', 'content'], data) as string
+        const name: string = (R.path(['object', 'name'], data) as string) || content
+        const attachments: any[] = (R.path(['object', 'attachment'], data) as any[]) || []
+        const buttons = R.filter(
+          (attachment: any) => attachment.type === 'Button' || attachment.type === 'Link',
+          attachments
+        )
+        const fButtons = createButtons(buttons)
 
-          if (dataType === 'Image' || dataType === 'Video') {
-            if (dataType === 'Video' && R.isEmpty(fButtons)) {
-              messageData.message.text = concat([
-                name || '',
-                content || '',
-                R.path(['object', 'url'], data),
-              ]);
-            } else {
-              messageData.message.attachment = createCard(
-                name,
-                content,
-                fButtons,
-                R.path(['object', 'url'], data),
-              );
-            }
-          } else if (dataType === 'Note') {
-            const quickReplies = createQuickReplies(buttons);
-
-            if (!R.isEmpty(quickReplies)) {
-              messageData.message.quick_replies = quickReplies;
-              messageData.message.text = content;
-            } else if (!R.isEmpty(fButtons)) {
-              messageData
-                .message.attachment = createTextWithButtons(name, content, fButtons);
-            } else {
-              messageData.message.text = content;
-            }
+        if (dataType === 'Image' || dataType === 'Video') {
+          if (dataType === 'Video' && R.isEmpty(fButtons)) {
+            messageData.message.text = concat([name || '', content || '', R.path(['object', 'url'], data)])
+          } else {
+            messageData.message.attachment = createCard(name, content, fButtons, R.path(['object', 'url'], data))
           }
-        } else if (dataType === 'Activity') {
-          const content: string = R.path(['object', 'content'], data) as string;
-          if (content === 'typing/on') {
-            messageData.sender_action = 'typing_on';
-          } else if (content === 'typing/off') {
-            messageData.sender_action = 'typing_off';
-          } else if (content === 'mark/seen') {
-            messageData.sender_action = 'mark_seen';
+        } else if (dataType === 'Note') {
+          const quickReplies = createQuickReplies(buttons)
+
+          if (!R.isEmpty(quickReplies)) {
+            messageData.message.quick_replies = quickReplies
+            messageData.message.text = content
+          } else if (!R.isEmpty(fButtons)) {
+            messageData.message.attachment = createTextWithButtons(name, content, fButtons)
+          } else {
+            messageData.message.text = content
           }
         }
-
-        if (R.isEmpty(R.path(['message', 'attachment'], messageData))) {
-          delete messageData.message.attachment;
+      } else if (dataType === 'Activity') {
+        const content: string = R.path(['object', 'content'], data) as string
+        if (content === 'typing/on') {
+          messageData.sender_action = 'typing_on'
+        } else if (content === 'typing/off') {
+          messageData.sender_action = 'typing_off'
+        } else if (content === 'mark/seen') {
+          messageData.sender_action = 'mark_seen'
         }
+      }
 
-        if (!R.isEmpty(messageData)) {
-          this.logger.debug('Message build', { message: messageData });
-          return rp({
-            json: messageData,
-            method: 'POST',
-            qs: { access_token: this.token },
-            uri: `https://graph.facebook.com/${this.versionAPI}/me/messages`,
-          })
-          .then(() => ({ type: 'sent', serviceID: this.serviceId() }));
-        }
+      if (R.isEmpty(R.path(['message', 'attachment'], messageData))) {
+        delete messageData.message.attachment
+      }
 
-        return Promise.reject(new Error('Only Note, Image, and Video are supported.'));
-      });
+      if (!R.isEmpty(messageData)) {
+        this.logger.debug('Message build', { message: messageData })
+        return rp({
+          json: messageData,
+          method: 'POST',
+          qs: { access_token: this.token },
+          uri: `https://graph.facebook.com/${this.versionAPI}/me/messages`
+        }).then(() => ({ type: 'sent', serviceID: this.serviceId() }))
+      }
+
+      return Promise.reject(new Error('Only Note, Image, and Video are supported.'))
+    })
   }
 
   // Return user information
-  private user(id: string,
-               fields: string = 'first_name,last_name',
-               cache: boolean = true): Promise<object> {
-    const key: string = `${id}${fields}`;
+  private user(id: string, fields: string = 'first_name,last_name', cache: boolean = true): Promise<object> {
+    const key: string = `${id}${fields}`
     if (cache) {
-      const data = this.storeUsers.get(key);
+      const data = this.storeUsers.get(key)
       if (data) {
-        return Promise.resolve(data);
+        return Promise.resolve(data)
       }
     }
 
@@ -252,67 +249,69 @@ export class Adapter {
       json: true,
       method: 'GET',
       qs: { access_token: this.token, fields },
-      uri: `https://graph.facebook.com/${this.versionAPI}/${id}`,
-    };
+      uri: `https://graph.facebook.com/${this.versionAPI}/${id}`
+    }
 
+    // tslint:disable-line:no-trailing-whitespace
+    // @ts-ignore
     return rp(params)
-       .catch((err) => {
-          if (err.message && err.message.includes('nonexisting field')) {
-            params.qs.fields = 'name';
-            return rp(params);
-          }
-
-          throw err;
-       })
-      .then((data: any) => {
-        data.id = data.id || id;
-        if (!data.first_name && data.name) {
-          data.first_name = data.name;
-          data.last_name = '';
+      .catch(err => {
+        if (err.message && err.message.includes('nonexisting field')) {
+          params.qs.fields = 'name'
+          return rp(params)
         }
 
-        this.storeUsers.set(key, data);
-        return data;
-      });
+        throw err
+      })
+      .then((data: any) => {
+        data.id = data.id || id
+        if (!data.first_name && data.name) {
+          data.first_name = data.name
+          data.last_name = ''
+        }
+
+        this.storeUsers.set(key, data)
+        return data
+      })
   }
 
   private setupRouter(): Router {
-    const router = Router();
+    const router = Router()
 
     // Endpoint to verify the trust
     router.get('/', (req, res) => {
       if (req.query['hub.mode'] === 'subscribe') {
         if (req.query['hub.verify_token'] === this.tokenSecret) {
-          res.send(req.query['hub.challenge']);
+          res.send(req.query['hub.challenge'])
         } else {
-          res.send('OK');
+          res.send('OK')
         }
       }
-    });
+    })
 
     // route handler
     router.post('/', (req, res) => {
-      let verify = true; // consumerSecret is optional
+      let verify = true // consumerSecret is optional
       if (this.consumerSecret) {
-        verify = isXHubSignatureValid(req, this.consumerSecret);
+        verify = isXHubSignatureValid(req, this.consumerSecret)
       }
 
       if (verify) {
         const event: IWebHookEvent = {
           request: req,
-          response: res,
-        };
+          response: res
+        }
 
-        this.emitter.emit('message', event);
+        this.emitter.emit('message', event)
         // Assume all went well.
-        res.sendStatus(200);
-        return;
+        res.sendStatus(200)
+        return
       }
 
-      this.logger.error('Failed signature validation. Make sure the consumerSecret is match.');
-      res.sendStatus(403);
-    });
+      this.logger.error('Failed signature validation. Make sure the consumerSecret is match.')
+      res.sendStatus(403)
+    })
 
-    return router;
+    return router
   }
 }

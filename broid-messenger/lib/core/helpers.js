@@ -3,7 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const crypto = require("crypto");
 const R = require("ramda");
 function isXHubSignatureValid(request, secret) {
-    const expected = crypto.createHmac('sha1', secret)
+    const expected = crypto
+        .createHmac('sha1', secret)
         .update(JSON.stringify(request.body), 'utf8')
         .digest('hex');
     const received = request.headers['x-hub-signature'].split('sha1=')[1];
@@ -11,10 +12,10 @@ function isXHubSignatureValid(request, secret) {
 }
 exports.isXHubSignatureValid = isXHubSignatureValid;
 function parseQuickReplies(quickReplies) {
-    return R.reject(R.isNil)(R.map((button) => {
+    return R.reject(R.isNil)(R.map(button => {
         if (button.mediaType === 'application/vnd.geo+json') {
             return {
-                content_type: 'location',
+                content_type: 'location'
             };
         }
         return null;
@@ -25,14 +26,14 @@ function createQuickReplies(buttons) {
     return R.reject(R.isNil)(R.map((button) => {
         if (button.mediaType === 'application/vnd.geo+json') {
             return {
-                content_type: 'location',
+                content_type: 'location'
             };
         }
         else if (button.mediaType === 'text/plain') {
             return {
                 content_type: 'text',
                 payload: button.url,
-                title: button.content || button.name,
+                title: button.content || button.name
             };
         }
         return null;
@@ -46,26 +47,26 @@ function createButtons(buttons) {
             return {
                 payload: button.url,
                 title,
-                type: 'postback',
+                type: 'postback'
             };
         }
         else if (button.mediaType === 'text/html') {
             return {
                 title,
                 type: 'web_url',
-                url: button.url,
+                url: button.url
             };
         }
         else if (button.mediaType === 'audio/telephone-event') {
             return {
                 payload: button.url,
                 title,
-                type: 'phone_number',
+                type: 'phone_number'
             };
         }
         else if (button.mediaType === 'broid/share') {
             return {
-                type: 'element_share',
+                type: 'element_share'
             };
         }
         return null;
@@ -84,7 +85,7 @@ function createElement(data) {
         image_url: imageURL || '',
         item_url: '',
         subtitle: content !== name ? content : '',
-        title: !name || R.isEmpty(name) ? content.substring(0, 10) : name,
+        title: !name || R.isEmpty(name) ? content.substring(0, 10) : name
     };
 }
 exports.createElement = createElement;
@@ -92,24 +93,26 @@ function createCard(name, content, buttons, imageURL) {
     if (imageURL && (!name || R.isEmpty(name)) && (!buttons || R.isEmpty(buttons))) {
         return {
             payload: {
-                url: imageURL,
+                url: imageURL
             },
-            type: 'image',
+            type: 'image'
         };
     }
     else {
         return {
             payload: {
-                elements: [{
+                elements: [
+                    {
                         buttons: buttons && !R.isEmpty(buttons) ? buttons : null,
                         image_url: imageURL || '',
                         item_url: '',
                         subtitle: content !== name ? content : '',
-                        title: !name || R.isEmpty(name) ? content.substring(0, 10) : name,
-                    }],
-                template_type: 'generic',
+                        title: !name || R.isEmpty(name) ? content.substring(0, 10) : name
+                    }
+                ],
+                template_type: 'generic'
             },
-            type: 'template',
+            type: 'template'
         };
     }
 }
@@ -119,9 +122,9 @@ function createTextWithButtons(name, content, buttons) {
         payload: {
             buttons,
             template_type: 'button',
-            text: content || name,
+            text: content || name
         },
-        type: 'template',
+        type: 'template'
     };
 }
 exports.createTextWithButtons = createTextWithButtons;

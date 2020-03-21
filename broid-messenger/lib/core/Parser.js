@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const schemas_1 = require("@broid/schemas");
-const utils_1 = require("@broid/utils");
+const broid_schemas_1 = require("@sava.team/broid-schemas");
+const broid_utils_1 = require("@sava.team/broid-utils");
 const Promise = require("bluebird");
 const R = require("ramda");
 const uuid = require("uuid");
@@ -9,11 +9,11 @@ class Parser {
     constructor(serviceName, serviceID, logLevel) {
         this.serviceID = serviceID;
         this.generatorName = serviceName;
-        this.logger = new utils_1.Logger('parser', logLevel);
+        this.logger = new broid_utils_1.Logger('parser', logLevel);
     }
     validate(event) {
         this.logger.debug('Validation process', { event });
-        const parsed = utils_1.cleanNulls(event);
+        const parsed = broid_utils_1.cleanNulls(event);
         if (!parsed || R.isEmpty(parsed)) {
             return Promise.resolve(null);
         }
@@ -21,35 +21,37 @@ class Parser {
             this.logger.debug('Type not found.', { parsed });
             return Promise.resolve(null);
         }
-        return schemas_1.default(parsed, 'activity')
+        return broid_schemas_1.default(parsed, 'activity')
             .then(() => parsed)
-            .catch((err) => {
+            .catch(err => {
             this.logger.error(err);
             return null;
         });
     }
     parse(event) {
         this.logger.debug('Parse process', { event });
-        const normalized = utils_1.cleanNulls(event);
+        const normalized = broid_utils_1.cleanNulls(event);
         if (!normalized || R.isEmpty(normalized)) {
             return Promise.resolve(null);
         }
         const activitystreams = this.createActivityStream(normalized);
         activitystreams.actor = {
             id: R.path(['authorInformation', 'id'], normalized),
-            name: utils_1.concat([R.path(['authorInformation', 'first_name'], normalized),
-                R.path(['authorInformation', 'last_name'], normalized)]),
-            type: 'Person',
+            name: broid_utils_1.concat([
+                R.path(['authorInformation', 'first_name'], normalized),
+                R.path(['authorInformation', 'last_name'], normalized)
+            ]),
+            type: 'Person'
         };
         activitystreams.target = {
             id: normalized.channel,
             name: normalized.channel,
-            type: 'Person',
+            type: 'Person'
         };
-        return Promise.map(normalized.attachments, (attachment) => this.parseAttachment(attachment))
+        return Promise.map(normalized.attachments, attachment => this.parseAttachment(attachment))
             .then(R.reject(R.isNil))
-            .then((attachments) => {
-            const places = R.filter((attachment) => attachment.type === 'Place', attachments);
+            .then(attachments => {
+            const places = R.filter(attachment => attachment.type === 'Place', attachments);
             const objectID = normalized.mid || this.createIdentifier();
             if (R.length(places) === 1) {
                 activitystreams.object = places[0];
@@ -60,7 +62,7 @@ class Parser {
                 activitystreams.object = {
                     id: objectID,
                     type: attachment.type,
-                    url: attachment.url,
+                    url: attachment.url
                 };
                 if (attachment.mediaType) {
                     activitystreams.object.mediaType = attachment.mediaType;
@@ -71,7 +73,7 @@ class Parser {
                     attachment: attachments,
                     content: normalized.content || '',
                     id: objectID,
-                    type: 'Note',
+                    type: 'Note'
                 };
             }
             else if (R.path(['quickReply', 'payload'], normalized)) {
@@ -79,17 +81,17 @@ class Parser {
                     content: R.path(['quickReply', 'payload'], normalized),
                     id: objectID,
                     name: normalized.content || '',
-                    type: 'Note',
+                    type: 'Note'
                 };
             }
             return activitystreams;
         })
-            .then((as2) => {
+            .then(as2 => {
             if (!as2.object && !R.isEmpty(normalized.content)) {
                 as2.object = {
                     content: normalized.content,
                     id: normalized.mid || this.createIdentifier(),
-                    type: 'Note',
+                    type: 'Note'
                 };
             }
             if (normalized.title) {
@@ -118,7 +120,7 @@ class Parser {
                         mid: data.timestamp.toString(),
                         quickReply: [],
                         seq: data.timestamp.toString(),
-                        title: data.postback.title || null,
+                        title: data.postback.title || null
                     };
                 }
                 else {
@@ -131,7 +133,7 @@ class Parser {
                         createdTimestamp: data.timestamp,
                         mid: data.message.mid,
                         quickReply: data.message.quick_reply || [],
-                        seq: data.message.seq,
+                        seq: data.message.seq
                     };
                 }
             }
@@ -145,15 +147,15 @@ class Parser {
     createActivityStream(normalized) {
         return {
             '@context': 'https://www.w3.org/ns/activitystreams',
-            'generator': {
+            generator: {
                 id: this.serviceID,
                 name: this.generatorName,
-                type: 'Service',
+                type: 'Service'
             },
-            'published': normalized.createdTimestamp ?
-                Math.floor(normalized.createdTimestamp / 1000)
+            published: normalized.createdTimestamp
+                ? Math.floor(normalized.createdTimestamp / 1000)
                 : Math.floor(Date.now() / 1000),
-            'type': 'Create',
+            type: 'Create'
         };
     }
     parseAttachment(attachment) {
@@ -161,14 +163,12 @@ class Parser {
         attachmentType = attachmentType.toLowerCase();
         if (attachmentType === 'image' || attachmentType === 'video') {
             const a = {
-                type: utils_1.capitalizeFirstLetter(attachmentType),
-                url: R.path(['payload', 'url'], attachment),
+                type: broid_utils_1.capitalizeFirstLetter(attachmentType),
+                url: R.path(['payload', 'url'], attachment)
             };
-            return Promise.resolve(a)
-                .then((am) => {
+            return Promise.resolve(a).then(am => {
                 if (am.url) {
-                    return utils_1.fileInfo(am.url.split('?')[0], this.logger)
-                        .then((infos) => R.assoc('mediaType', infos.mimetype, am));
+                    return broid_utils_1.fileInfo(am.url.split('?')[0], this.logger).then(infos => R.assoc('mediaType', infos.mimetype, am));
                 }
                 return null;
             });
@@ -179,7 +179,7 @@ class Parser {
                 latitude: R.path(['payload', 'coordinates', 'lat'], attachment),
                 longitude: R.path(['payload', 'coordinates', 'long'], attachment),
                 name: attachment.title,
-                type: 'Place',
+                type: 'Place'
             });
         }
         return Promise.resolve(null);

@@ -1,20 +1,14 @@
-[npm]: https://img.shields.io/badge/npm-broid-green.svg?style=flat
-[npm-url]: https://www.npmjs.com/org/broid
+[npm]: https://img.shields.io/badge/npm-sava.team-green.svg?style=flat
+[npm-url]: https://www.npmjs.com/org/sava.team
 
-[node]: https://img.shields.io/node/v/@broid/messenger.svg
+[node]: https://img.shields.io/node/v/@sava.team/broid-messenger.svg
 [node-url]: https://nodejs.org
 
 [deps]: https://img.shields.io/badge/dependencies-checked-green.svg?style=flat
 [deps-url]: #integrations
 
-[tests]: https://img.shields.io/travis/broidHQ/integrations/master.svg
-[tests-url]: https://travis-ci.org/broidHQ/integrations
-
-[bithound]: https://img.shields.io/bithound/code/github/broidHQ/integrations.svg
-[bithound-url]: https://www.bithound.io/github/broidHQ/integrations
-
-[bithoundscore]: https://www.bithound.io/github/broidHQ/integrations/badges/score.svg
-[bithoundscore-url]: https://www.bithound.io/github/broidHQ/integrations
+[tests]: https://img.shields.io/travis/xakep-sava/integrations/master.svg
+[tests-url]: https://travis-ci.org/xakep-sava/integrations
 
 [nsp-checked]: https://img.shields.io/badge/nsp-checked-green.svg?style=flat
 [nsp-checked-url]: https://nodesecurity.io
@@ -23,8 +17,6 @@
 [![node][node]][node-url]
 [![deps][deps]][deps-url]
 [![tests][tests]][tests-url]
-[![bithound][bithound]][bithound-url]
-[![bithoundscore][bithoundscore]][bithoundscore-url]
 [![nsp-checked][nsp-checked]][nsp-checked-url]
 
 # Broid Messenger Integration
@@ -33,8 +25,8 @@ Broid Integrations is an open source project providing a suite of Activity Strea
 
 > Connect your App to Multiple Messaging Channels with  One OpenSource Language.
 
-[![gitter](https://badges.gitter.im/broidHQ/broid.svg)](https://t.broid.ai/c/Blwjlw?utm_source=github&utm_medium=readme&utm_campaign=top&link=gitter)
-[![slackin](https://slackin.broid.ai/badge.svg)](https://slackin.broid.ai)
+[![gitter](https://badges.gitter.im/savateam/community.svg)](https://gitter.im/savateam/community)
+[![slackin](https://img.shields.io/badge/site-sava.team-green?style=flat)](https://sava.team?utm_source=github&utm_medium=readme&utm_campaign=top&link=site)
 
 ## Message types supported
 
@@ -49,13 +41,13 @@ _Phone number is platform limitation._
 ### Install
 
 ```bash
-npm install --save @broid/messenger
+npm install --save @sava.team/broid-messenger
 ```
 
 ### Connect to Messenger
 
 ```javascript
-const BroidMessenger = require('@broid/messenger');
+const BroidMessenger = require('@sava.team/broid-messenger');
 
 const messenger = new broidMessenger({
   token: "<oauth_token>",
@@ -180,7 +172,7 @@ Example of turning typing indicators on with
 
 ### Post a message
 
-To send a message, the format should use the [broid-schemas](https://github.com/broidHQ/integrations/tree/master/broid-schemas).
+To send a message, the format should use the [broid-schemas](https://github.com/xakep-sava/integrations/tree/master/broid-schemas).
 
 ```javascript
 const formatted_message = {
@@ -208,7 +200,7 @@ messenger.send(formatted_message)
 
 ## Examples of messages
 
-You can find examples of sent and received messages at [Broid-Schemas](https://github.com/broidHQ/integrations/tree/master/broid-schemas).
+You can find examples of sent and received messages at [Broid-Schemas](https://github.com/xakep-sava/integrations/tree/master/broid-schemas).
 
 ## Contributing to Broid
 
@@ -216,7 +208,7 @@ See [CONTRIBUTE.md](../CONTRIBUTE.md)
 
 ## Copyright & License
 
-Copyright (c) 2016-2017 Broid.ai
+Copyright (c) 2020 SaVa.Team
 
 This project is licensed under the AGPL 3, which can be
 [found here](https://www.gnu.org/licenses/agpl-3.0.en.html).
