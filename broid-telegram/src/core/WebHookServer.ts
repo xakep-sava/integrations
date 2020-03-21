@@ -1,4 +1,4 @@
-import { Logger } from '@broid/utils'
+import { Logger } from '@sava.team/broid-utils'
 
 import * as Promise from 'bluebird'
 import * as bodyParser from 'body-parser'

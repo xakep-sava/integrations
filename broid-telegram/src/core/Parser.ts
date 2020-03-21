@@ -1,5 +1,5 @@
-import { cleanNulls, concat, fileInfo, Logger } from '@broid/utils'
 import { default as schemas, IActivityStream } from '@sava.team/broid-schemas'
+import { cleanNulls, concat, fileInfo, Logger } from '@sava.team/broid-utils'
 
 import * as Promise from 'bluebird'
 import * as R from 'ramda'

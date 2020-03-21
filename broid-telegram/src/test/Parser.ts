@@ -1,4 +1,4 @@
-import * as utils from '@broid/utils'
+import * as utils from '@sava.team/broid-utils'
 
 import ava from 'ava'
 import * as Bluebird from 'bluebird'

@@ -1,8 +1,8 @@
 process.env.NTBA_FIX_319 = '1'
 // TODO: process.env.NTBA_FIX_350 = '1'
 
-import { Logger } from '@broid/utils'
 import schemas from '@sava.team/broid-schemas'
+import { Logger } from '@sava.team/broid-utils'
 
 import * as Promise from 'bluebird'
 import { Router } from 'express'

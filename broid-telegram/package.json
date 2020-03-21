@@ -1,6 +1,6 @@
 {
   "name": "@sava.team/broid-telegram",
-  "version": "2.1.2",
+  "version": "2.1.3",
   "main": "lib/core/index.js",
   "license": "AGPL-3.0+",
   "author": "SaVa Team <i@sava.team> (https://sava.team)",
@@ -42,8 +42,8 @@
     "watch": "concurrently --kill-others \"yarn run lint:watch\" \"yarn run tsc:watch\""
   },
   "dependencies": {
-    "@broid/utils": "^1.1.1",
     "@sava.team/broid-schemas": "^1.1.4",
+    "@sava.team/broid-utils": "^1.2.1",
     "ava": "^0.17.0",
     "bluebird": "^3.7.2",
     "body-parser": "^1.19.0",

@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const utils = require("@broid/utils");
+const utils = require("@sava.team/broid-utils");
 const ava_1 = require("ava");
 const Bluebird = require("bluebird");
 const sinon = require("sinon");

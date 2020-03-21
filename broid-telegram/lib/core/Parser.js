@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const utils_1 = require("@broid/utils");
 const broid_schemas_1 = require("@sava.team/broid-schemas");
+const broid_utils_1 = require("@sava.team/broid-utils");
 const Promise = require("bluebird");
 const R = require("ramda");
 const uuid = require("uuid");
@@ -9,11 +9,11 @@ class Parser {
     constructor(serviceName, serviceID, logLevel) {
         this.serviceID = serviceID;
         this.generatorName = serviceName;
-        this.logger = new utils_1.Logger('parser', logLevel);
+        this.logger = new broid_utils_1.Logger('parser', logLevel);
     }
     validate(event) {
         this.logger.debug('Validation process', { event });
-        const parsed = utils_1.cleanNulls(event);
+        const parsed = broid_utils_1.cleanNulls(event);
         if (!parsed || R.isEmpty(parsed)) {
             return Promise.resolve(null);
         }
@@ -30,24 +30,24 @@ class Parser {
     }
     parse(event) {
         this.logger.debug('Normalize process', { event });
-        const normalized = utils_1.cleanNulls(event);
+        const normalized = broid_utils_1.cleanNulls(event);
         if (!normalized || R.isEmpty(normalized)) {
             return Promise.resolve(null);
         }
         const activitystreams = this.createActivityStream(normalized);
         activitystreams.actor = {
             id: R.toString(R.path(['from', 'id'], normalized)),
-            name: utils_1.concat([R.path(['from', 'first_name'], normalized), R.path(['from', 'last_name'], normalized)]),
+            name: broid_utils_1.concat([R.path(['from', 'first_name'], normalized), R.path(['from', 'last_name'], normalized)]),
             type: 'Person'
         };
         const chatType = R.path(['chat', 'type'], normalized) || '';
         activitystreams.target = {
             id: R.toString(R.path(['chat', 'id'], normalized)),
             name: R.path(['chat', 'title'], normalized) ||
-                utils_1.concat([R.path(['chat', 'first_name'], normalized), R.path(['chat', 'last_name'], normalized)]),
+                broid_utils_1.concat([R.path(['chat', 'first_name'], normalized), R.path(['chat', 'last_name'], normalized)]),
             type: R.toLower(chatType) === 'private' ? 'Person' : 'Group'
         };
-        return utils_1.fileInfo(normalized.text, this.logger)
+        return broid_utils_1.fileInfo(normalized.text, this.logger)
             .then(infos => {
             const mimetype = infos.mimetype;
             if (mimetype.startsWith('image/') || mimetype.startsWith('video/') || mimetype.startsWith('audio/')) {
@@ -81,7 +81,7 @@ class Parser {
     }
     normalize(evt) {
         this.logger.debug('Event received to normalize');
-        const event = utils_1.cleanNulls(evt);
+        const event = broid_utils_1.cleanNulls(evt);
         if (!event || R.isEmpty(event)) {
             return Promise.resolve(null);
         }
