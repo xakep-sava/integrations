@@ -19,14 +19,14 @@
 [![tests][tests]][tests-url]
 [![nsp-checked][nsp-checked]][nsp-checked-url]
 
-# Telegram Integration
+# Broid Telegram Integration
 
 Integrations is an open source project providing a suite of Activity Streams 2 libraries for unified communications among a vast number of communication platforms.
 
 > Connect your App to Multiple Messaging Channels with  One OpenSource Language.
 
 [![gitter](https://badges.gitter.im/savateam/community.svg)](https://gitter.im/savateam/community)
-[![slackin](https://img.shields.io/badge/site-sava.team-green?style=flat)](https://sava.team)
+[![slackin](https://img.shields.io/badge/site-sava.team-green?style=flat)](https://sava.team?utm_source=github&utm_medium=readme&utm_campaign=top&link=site)
 
 ## Message types supported
 
@@ -41,13 +41,13 @@ _Location, Phone number are platform limitations._
 ### Install
 
 ```bash
-npm install --save @broid/telegram
+npm install --save @sava.team/broid-telegram
 ```
 
 ### Connect to Telegram
 
 ```javascript
-const BroidTelegram = require('@broid/telegram');
+const BroidTelegram = require('@sava.team/broid-telegram');
 
 const telegram = new BroidTelegram({
   token: "<api_key>",
@@ -69,7 +69,7 @@ telegram.connect()
 Telegram can also be used with your existing express setup.
 
 ```javascript
-const BroidTelegram = require('@broid/telegram');
+const BroidTelegram = require('@sava.team/broid-telegram');
 const express = require("express");
 
 const telegram = new BroidTelegram({
@@ -120,7 +120,7 @@ telegram.listen()
 
 ### Post a message
 
-To send a message, the format should use the [broid-schemas](https://github.com/broidHQ/integrations/tree/master/broid-schemas).
+To send a message, the format should use the [broid-schemas](https://github.com/xakep-sava/integrations/tree/master/broid-schemas).
 
 ```javascript
 const formatted_message = {
@@ -148,7 +148,7 @@ telegram.send(formatted_message)
 
 ## Examples of messages
 
-You can find examples of sent and received messages at [Broid-Schemas](https://github.com/broidHQ/integrations/tree/master/broid-schemas).
+You can find examples of sent and received messages at [Broid-Schemas](https://github.com/xakep-sava/integrations/tree/master/broid-schemas).
 
 ## Contributing to Broid
 
@@ -156,7 +156,7 @@ See [CONTRIBUTE.md](../CONTRIBUTE.md)
 
 ## Copyright & License
 
-Copyright (c) 2016-2017 Broid.ai
+Copyright (c) 2020 SaVa.Team
 
 This project is licensed under the AGPL 3, which can be
 [found here](https://www.gnu.org/licenses/agpl-3.0.en.html).
