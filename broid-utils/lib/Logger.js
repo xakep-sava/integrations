@@ -5,7 +5,7 @@ class Logger {
     constructor(name, level) {
         this.pino = pino({
             level,
-            name,
+            name
         });
     }
     error(...messages) {

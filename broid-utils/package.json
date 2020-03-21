@@ -1,20 +1,21 @@
 {
-  "name": "@broid/utils",
-  "version": "1.2.0",
+  "name": "@sava.team/broid-utils",
+  "version": "1.2.1",
   "main": "lib/index.js",
   "license": "AGPL-3.0+",
-  "author": "Broid Team <opensource@broid.ai> (https://broid.ai)",
+  "author": "SaVa Team <i@sava.team> (https://sava.team)",
   "description": "Broid Utils used in Broid Integrations.",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/broidHQ/integrations.git"
+    "url": "git+ssh://git@github.com:xakep-sava/integrations.git"
   },
   "bugs": {
-    "url": "https://github.com/broidHQ/integrations/issues"
+    "url": "https://github.com/xakep-sava/integrations/issues"
   },
-  "homepage": "https://github.com/broidHQ/integrations/tree/master/broid-utils#readme",
+  "homepage": "https://github.com/xakep-sava/integrations/tree/master/broid-utils#readme",
   "keywords": [
     "broid",
+    "sava",
     "activity",
     "strams",
     "activity streams 2",
@@ -39,26 +40,26 @@
     "watch": "concurrently --kill-others \"yarn run lint:watch\" \"yarn run tsc:watch\""
   },
   "dependencies": {
-    "bluebird": "^3.5.0",
-    "file-type": "^4.1.0",
-    "pino": "^3.0.5",
+    "bluebird": "^3.7.2",
+    "file-type": "^14.1.4",
+    "pino": "^5.17.0",
     "ramda": "^0.22.1",
-    "read-chunk": "^2.0.0",
-    "request": "^2.81.0",
+    "read-chunk": "^3.2.0",
+    "request": "^2.88.2",
     "valid-url": "^1.0.9"
   },
   "devDependencies": {
-    "@types/bluebird": "^3.5.2",
-    "@types/bluebird-global": "^3.5.1",
-    "@types/node": "^7.0.12",
+    "@types/bluebird": "^3.5.30",
+    "@types/bluebird-global": "^3.5.12",
+    "@types/node": "^13.9.2",
     "@types/ramda": "^0.0.5",
-    "@types/uuid": "^3.0.0",
-    "concurrently": "^3.1.0",
-    "nsp": "^2.6.3",
-    "tslint": "^4.3.1",
-    "tslint-eslint-rules": "^3.5.1",
-    "tslint-microsoft-contrib": "^4.0.1",
-    "typescript": "~2.2.2",
-    "watch": "^1.0.1"
+    "@types/uuid": "^7.0.2",
+    "concurrently": "^5.1.0",
+    "nsp": "^3.2.1",
+    "tslint": "^6.1.0",
+    "tslint-eslint-rules": "^5.4.0",
+    "tslint-microsoft-contrib": "^6.2.0",
+    "typescript": "^3.8.3",
+    "watch": "^1.0.2"
   }
 }

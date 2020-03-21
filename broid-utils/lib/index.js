@@ -9,7 +9,7 @@ const validUrl = require("valid-url");
 const Logger_1 = require("./Logger");
 exports.Logger = Logger_1.Logger;
 Promise.promisifyAll(request);
-const cleanNulls = R.when(R.either(R.is(Array), R.is(Object)), R.pipe(R.reject(R.isNil), R.map((a) => cleanNulls(a))));
+const cleanNulls = R.when(R.either(R.is(Array), R.is(Object)), R.pipe(R.reject(R.isNil), R.map(a => cleanNulls(a))));
 exports.cleanNulls = cleanNulls;
 function capitalizeFirstLetter(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
@@ -23,19 +23,19 @@ function isUrl(url) {
     return validUrl.isWebUri(url);
 }
 exports.isUrl = isUrl;
-function fileInfo(file) {
-    const logger = new Logger_1.Logger('fileInfo', 'debug');
+function fileInfo(file, logger) {
     return Promise.resolve(isUrl(file))
-        .then((is) => {
+        .then(is => {
         if (is) {
-            return request.getAsync({ uri: file, encoding: null })
-                .then((response) => fileType(response.body));
+            return request.getAsync({ uri: file, encoding: null }).then(response => fileType(response.body));
         }
         return fileType(readChunk.sync(file, 0, 4100));
     })
-        .then((infos) => R.dissoc('mime', R.assoc('mimetype', infos.mime, infos)))
-        .catch((error) => {
-        logger.error(error);
+        .then(infos => R.dissoc('mime', R.assoc('mimetype', infos.mime, infos)))
+        .catch(error => {
+        if (logger) {
+            logger.debug(error);
+        }
         return { mimetype: '' };
     });
 }
