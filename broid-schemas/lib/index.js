@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const Ajv = require("ajv");
-const Promise = require("bluebird");
 function default_1(data, schema) {
     const BASE_URL = 'http://schemas.broid.ai/';
     const ajv = new Ajv({

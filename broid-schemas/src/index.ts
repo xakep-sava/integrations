@@ -1,5 +1,4 @@
 import * as Ajv from 'ajv'
-import * as Promise from 'bluebird'
 
 export interface IASBase {
   id: string

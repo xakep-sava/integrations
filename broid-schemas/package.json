@@ -1,6 +1,6 @@
 {
   "name": "@sava.team/broid-schemas",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "main": "lib/index.js",
   "license": "AGPL-3.0+",
   "author": "SaVa Team <i@sava.team> (https://sava.team)",
@@ -40,15 +40,9 @@
     "watch": "concurrently --kill-others \"yarn run lint:watch\" \"yarn run tsc:watch\""
   },
   "dependencies": {
-    "ajv": "^6.12.0",
-    "bluebird": "^3.7.2"
+    "ajv": "^5.5.2"
   },
   "devDependencies": {
-    "@types/bluebird": "^3.5.30",
-    "@types/bluebird-global": "^3.5.12",
-    "@types/node": "^13.9.2",
-    "@types/ramda": "^0.26.44",
-    "@types/uuid": "^7.0.2",
     "concurrently": "^5.1.0",
     "js-yaml": "^3.13.1",
     "json-minify": "^1.0.0",
