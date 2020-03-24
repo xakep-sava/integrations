@@ -129,7 +129,7 @@ class Adapter {
                 const fButtons = helpers_1.createButtons(buttons);
                 if (['Image', 'Audio', 'Video', 'Document'].indexOf(dataType) > -1) {
                     if (dataType === 'Video' && R.isEmpty(fButtons)) {
-                        messageData.message.textr = broid_utils_1.concat([name || '', content || '', R.path(['object', 'url'], data)]);
+                        messageData.message.text = broid_utils_1.concat([name || '', content || '', R.path(['object', 'url'], data)]);
                     }
                     else {
                         messageData.message.attachment = helpers_1.createCard(name, content, fButtons, R.path(['object', 'url'], data), dataType === 'Document' ? 'File' : dataType);
@@ -173,7 +173,7 @@ class Adapter {
                     uri: `https://graph.facebook.com/${this.versionAPI}/me/messages`
                 }).then(() => ({ type: 'sent', serviceID: this.serviceId() }));
             }
-            return Promise.reject(new Error('Only Note, Image, Video and Document are supported.'));
+            return Promise.reject(new Error('Only Note, Image, Video, Audio and Document are supported.'));
         });
     }
     user(id, fields = 'first_name,last_name', cache = true) {

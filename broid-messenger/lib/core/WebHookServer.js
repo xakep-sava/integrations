@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const broid_utils_1 = require("@sava.team/broid-utils");
-const Promise = require("bluebird");
 const bodyParser = require("body-parser");
 const express = require("express");
 class WebHookServer {
