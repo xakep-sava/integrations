@@ -1,6 +1,6 @@
 {
   "name": "@sava.team/broid-utils",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "main": "lib/index.js",
   "license": "AGPL-3.0+",
   "author": "SaVa Team <i@sava.team> (https://sava.team)",
@@ -40,17 +40,14 @@
     "watch": "concurrently --kill-others \"yarn run lint:watch\" \"yarn run tsc:watch\""
   },
   "dependencies": {
-    "bluebird": "^3.7.2",
     "file-type": "^14.1.4",
     "pino": "^5.17.0",
     "ramda": "^0.22.1",
     "read-chunk": "^3.2.0",
-    "request": "^2.88.2",
+    "request-promise": "^4.2.5",
     "valid-url": "^1.0.9"
   },
   "devDependencies": {
-    "@types/bluebird": "^3.5.30",
-    "@types/bluebird-global": "^3.5.12",
     "@types/node": "^13.9.2",
     "@types/ramda": "^0.0.5",
     "@types/uuid": "^7.0.2",

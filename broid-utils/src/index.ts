@@ -1,13 +1,10 @@
-import * as Promise from 'bluebird'
-import * as fileType from 'file-type'
+import * as FileType from 'file-type'
 import * as R from 'ramda'
 import * as readChunk from 'read-chunk'
-import * as request from 'request'
+import * as rp from 'request-promise'
 import * as validUrl from 'valid-url'
 
 import { Logger } from './Logger'
-
-Promise.promisifyAll(request)
 
 const cleanNulls = R.when(
   R.either(R.is(Array), R.is(Object)),
@@ -37,14 +34,16 @@ function isUrl(url) {
 // Return an object
 function fileInfo(file, logger?: Logger) {
   return Promise.resolve(isUrl(file))
-    .then(is => {
+    .then(async is => {
       if (is) {
-        // @ts-ignore
-        return request.getAsync({ uri: file, encoding: null }).then(response => fileType(response.body))
+        return rp({ uri: file, encoding: null })
+          .then(async response => await FileType.fromBuffer(Buffer.from(response, 'utf8')))
+          .catch(error => {
+            throw new Error(error)
+          })
       }
 
-      // @ts-ignore
-      return fileType(readChunk.sync(file, 0, 4100))
+      return await FileType.fromBuffer(readChunk.sync(file, 0, 4100))
     })
     .then(infos => R.dissoc('mime', R.assoc('mimetype', infos.mime, infos)))
     .catch(error => {
