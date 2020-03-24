@@ -194,15 +194,22 @@ export class Parser {
     let attachmentType = attachment.type || ''
     attachmentType = attachmentType.toLowerCase()
 
-    if (attachmentType === 'image' || attachmentType === 'video') {
+    if (['image', 'audio', 'video', 'file'].indexOf(attachmentType) > -1) {
+      const url: string = R.path(['payload', 'url'], attachment)
+
       const a: IASMedia = {
-        type: capitalizeFirstLetter(attachmentType),
-        url: R.path(['payload', 'url'], attachment)
+        type: capitalizeFirstLetter(attachmentType === 'file' ? 'document' : attachmentType),
+        content:
+          url
+            ?.split('/')
+            ?.reverse()[0]
+            ?.split('?')[0] ?? '',
+        url
       }
 
       return Promise.resolve(a).then(am => {
         if (am.url) {
-          return fileInfo(am.url.split('?')[0], this.logger).then(infos => R.assoc('mediaType', infos.mimetype, am))
+          return fileInfo(am.url, this.logger).then(infos => R.assoc('mediaType', infos.mimetype, am))
         }
         return null
       })

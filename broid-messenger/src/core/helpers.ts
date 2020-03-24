@@ -104,14 +104,13 @@ export function createElement(data: any): any {
   }
 }
 
-export function createCard(name: string, content: string, buttons?: any[], imageURL?: any): object {
-  if (imageURL && (!name || R.isEmpty(name)) && (!buttons || R.isEmpty(buttons))) {
-    // image
+export function createCard(name: string, content: string, buttons?: any[], url?: any, dataType?: any): object {
+  if (url && (!name || R.isEmpty(name)) && (!buttons || R.isEmpty(buttons))) {
     return {
+      type: dataType?.toLowerCase(),
       payload: {
-        url: imageURL
-      },
-      type: 'image'
+        url
+      }
     }
   } else {
     // card
@@ -120,7 +119,7 @@ export function createCard(name: string, content: string, buttons?: any[], image
         elements: [
           {
             buttons: buttons && !R.isEmpty(buttons) ? buttons : null,
-            image_url: imageURL || '',
+            image_url: url || '',
             item_url: '',
             subtitle: content !== name ? content : '',
             title: !name || R.isEmpty(name) ? content.substring(0, 10) : name

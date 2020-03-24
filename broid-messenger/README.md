@@ -30,9 +30,9 @@ Broid Integrations is an open source project providing a suite of Activity Strea
 
 ## Message types supported
 
-| Simple | Image | Video | Buttons | Location | Activity | Phone number |
-|:------:|:-----:|:-----:|:-------:|:--------:|:------------:|:------------:|
-|   ✅    |   ✅   |   ✅   |    ✅    |    ✅     |    ✅     |              |
+| Simple | Image | Video | Buttons | Document | Location | Activity | Phone number |
+|:------:|:-----:|:-----:|:-------:|:-------:|:--------:|:------------:|:------------:|
+|   ✅    |   ✅   |   ✅   |    ✅    |    ✅     |    ✅     |    ✅     |             |
 
 _Phone number is platform limitation._
 

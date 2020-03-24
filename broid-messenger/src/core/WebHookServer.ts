@@ -1,5 +1,4 @@
 import { Logger } from '@sava.team/broid-utils'
-import * as Promise from 'bluebird'
 import * as bodyParser from 'body-parser'
 import * as express from 'express'
 import * as http from 'http'
@@ -27,8 +26,8 @@ export class WebHookServer {
     })
   }
 
-  public close(): Promise<null> {
-    return Promise.fromCallback(cb => this.httpClient.close(cb))
+  public close(): Promise<any> {
+    return Promise.resolve(() => this.httpClient.close(cb => cb))
   }
 
   // Configure API endpoints.

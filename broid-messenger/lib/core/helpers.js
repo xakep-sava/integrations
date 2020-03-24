@@ -89,13 +89,13 @@ function createElement(data) {
     };
 }
 exports.createElement = createElement;
-function createCard(name, content, buttons, imageURL) {
-    if (imageURL && (!name || R.isEmpty(name)) && (!buttons || R.isEmpty(buttons))) {
+function createCard(name, content, buttons, url, dataType) {
+    if (url && (!name || R.isEmpty(name)) && (!buttons || R.isEmpty(buttons))) {
         return {
+            type: dataType === null || dataType === void 0 ? void 0 : dataType.toLowerCase(),
             payload: {
-                url: imageURL
-            },
-            type: 'image'
+                url
+            }
         };
     }
     else {
@@ -104,7 +104,7 @@ function createCard(name, content, buttons, imageURL) {
                 elements: [
                     {
                         buttons: buttons && !R.isEmpty(buttons) ? buttons : null,
-                        image_url: imageURL || '',
+                        image_url: url || '',
                         item_url: '',
                         subtitle: content !== name ? content : '',
                         title: !name || R.isEmpty(name) ? content.substring(0, 10) : name

@@ -17,7 +17,7 @@ class WebHookServer {
         });
     }
     close() {
-        return Promise.fromCallback(cb => this.httpClient.close(cb));
+        return Promise.resolve(() => this.httpClient.close(cb => cb));
     }
     setupExpress(router) {
         this.express = express();

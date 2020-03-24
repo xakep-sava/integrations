@@ -159,16 +159,19 @@ class Parser {
         };
     }
     parseAttachment(attachment) {
+        var _a, _b, _c;
         let attachmentType = attachment.type || '';
         attachmentType = attachmentType.toLowerCase();
-        if (attachmentType === 'image' || attachmentType === 'video') {
+        if (['image', 'audio', 'video', 'file'].indexOf(attachmentType) > -1) {
+            const url = R.path(['payload', 'url'], attachment);
             const a = {
-                type: broid_utils_1.capitalizeFirstLetter(attachmentType),
-                url: R.path(['payload', 'url'], attachment)
+                type: broid_utils_1.capitalizeFirstLetter(attachmentType === 'file' ? 'document' : attachmentType),
+                content: (_c = (_b = (_a = url === null || url === void 0 ? void 0 : url.split('/')) === null || _a === void 0 ? void 0 : _a.reverse()[0]) === null || _b === void 0 ? void 0 : _b.split('?')[0]) !== null && _c !== void 0 ? _c : '',
+                url
             };
             return Promise.resolve(a).then(am => {
                 if (am.url) {
-                    return broid_utils_1.fileInfo(am.url.split('?')[0], this.logger).then(infos => R.assoc('mediaType', infos.mimetype, am));
+                    return broid_utils_1.fileInfo(am.url, this.logger).then(infos => R.assoc('mediaType', infos.mimetype, am));
                 }
                 return null;
             });

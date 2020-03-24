@@ -117,7 +117,7 @@ class Adapter {
                     }
                 }, messageData);
             }
-            else if (dataType === 'Note' || dataType === 'Image' || dataType === 'Video') {
+            else if (['Note', 'Image', 'Video', 'Audio', 'Document'].indexOf(dataType) > -1) {
                 messageData = R.assoc('message', {
                     attachment: {},
                     text: ''
@@ -127,12 +127,12 @@ class Adapter {
                 const attachments = R.path(['object', 'attachment'], data) || [];
                 const buttons = R.filter((attachment) => attachment.type === 'Button' || attachment.type === 'Link', attachments);
                 const fButtons = helpers_1.createButtons(buttons);
-                if (dataType === 'Image' || dataType === 'Video') {
+                if (['Image', 'Audio', 'Video', 'Document'].indexOf(dataType) > -1) {
                     if (dataType === 'Video' && R.isEmpty(fButtons)) {
-                        messageData.message.text = broid_utils_1.concat([name || '', content || '', R.path(['object', 'url'], data)]);
+                        messageData.message.textr = broid_utils_1.concat([name || '', content || '', R.path(['object', 'url'], data)]);
                     }
                     else {
-                        messageData.message.attachment = helpers_1.createCard(name, content, fButtons, R.path(['object', 'url'], data));
+                        messageData.message.attachment = helpers_1.createCard(name, content, fButtons, R.path(['object', 'url'], data), dataType === 'Document' ? 'File' : dataType);
                     }
                 }
                 else if (dataType === 'Note') {
@@ -173,7 +173,7 @@ class Adapter {
                     uri: `https://graph.facebook.com/${this.versionAPI}/me/messages`
                 }).then(() => ({ type: 'sent', serviceID: this.serviceId() }));
             }
-            return Promise.reject(new Error('Only Note, Image, and Video are supported.'));
+            return Promise.reject(new Error('Only Note, Image, Video and Document are supported.'));
         });
     }
     user(id, fields = 'first_name,last_name', cache = true) {
