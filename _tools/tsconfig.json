@@ -8,7 +8,7 @@
     "outDir": "lib",
     "noImplicitReturns": true,
     "noImplicitThis": true,
-    "noUnusedLocals": true,
+    "noUnusedLocals": false,
     "noUnusedParameters": true,
     "noEmitOnError": true,
     "strictNullChecks": true,
