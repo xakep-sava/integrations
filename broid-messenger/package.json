@@ -1,6 +1,6 @@
 {
   "name": "@sava.team/broid-messenger",
-  "version": "2.2.4",
+  "version": "2.2.5",
   "main": "lib/core/index.js",
   "license": "AGPL-3.0+",
   "author": "SaVa Team <i@sava.team> (https://sava.team)",
@@ -50,6 +50,7 @@
     "eventemitter3": "^4.0.0",
     "express": "^4.17.1",
     "ramda": "^0.27.0",
+    "request": "^2.88.2",
     "request-promise": "^4.2.5",
     "rxjs": "^5.0.2",
     "sinon": "^9.0.1",

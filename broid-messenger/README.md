@@ -30,9 +30,13 @@ Broid Integrations is an open source project providing a suite of Activity Strea
 
 ## Message types supported
 
-| Simple | Image | Video | Buttons | Document | Location | Activity | Phone number |
-|:------:|:-----:|:-----:|:-------:|:-------:|:--------:|:------------:|:------------:|
-|   ✅    |   ✅   |   ✅   |    ✅    |    ✅     |    ✅     |    ✅     |             |
+| Simple | Image | Video | Buttons | Document | Location |
+|:------:|:-----:|:-----:|:-------:|:--------:|:--------:|
+|   ✅    |   ✅   |   ✅  |    ✅    |    ✅    |    ✅     |
+
+| Activity | Phone number | Collection |
+|:--------:|:------------:|:----------:|
+|    ✅     |              |     ✅     | 
 
 _Phone number is platform limitation._
 
@@ -121,7 +125,7 @@ Example:
         "mediaType": "text/plain",
         "name": "broid",
         "type": "Button",
-        "url": "broid_payload",
+        "url": "broid_payload"
       }      
     ]
   },
@@ -153,7 +157,7 @@ Example of turning typing indicators on with
   },
   "object": {
     "type": "Activity",
-    "content": "typing/on",
+    "content": "typing/on"
   },
   "to": {
     "type": "Person",
