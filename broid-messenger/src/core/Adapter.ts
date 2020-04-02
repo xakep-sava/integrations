@@ -281,6 +281,35 @@ export class Adapter {
       })
   }
 
+  // Setting up getting started
+  private setupGetStarted(message: string = '/start'): Promise<object | Error> {
+    if (message.length) {
+      this.logger.debug('setupGetStarted', { message })
+      return rp({
+        json: { get_started: { payload: message } },
+        method: 'POST',
+        qs: { access_token: this.token },
+        uri: `https://graph.facebook.com/${this.versionAPI}/me/messenger_profile`
+      }).then(() => ({ type: 'setupGetStarted', serviceID: this.serviceId() }))
+    }
+
+    return Promise.reject(new Error('The postback message cannot be empty.'))
+  }
+
+  // Setup get_started bot
+  private subscribeApp(pageID: number, fields: string = 'messages'): Promise<object | Error> {
+    if (pageID && fields.length) {
+      this.logger.debug('subscribeApp', { pageID, fields })
+      return rp({
+        method: 'POST',
+        qs: { access_token: this.token, subscribed_fields: fields },
+        uri: `https://graph.facebook.com/${this.versionAPI}/${pageID}/subscribed_apps`
+      }).then(() => ({ type: 'subscribeApp', serviceID: this.serviceId() }))
+    }
+
+    return Promise.reject(new Error('Page ID or subscribe fields cannot be empty.'))
+  }
+
   private setupRouter(): Router {
     const router = Router()
 
