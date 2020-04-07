@@ -19,6 +19,8 @@
 [![tests][tests]][tests-url]
 [![nsp-checked][nsp-checked]][nsp-checked-url]
 
+[![Build](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/sava)
+
 # Broid Messenger Integration
 
 Broid Integrations is an open source project providing a suite of Activity Streams 2 libraries for unified communications among a vast number of communication platforms.

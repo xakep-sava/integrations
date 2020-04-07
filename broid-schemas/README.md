@@ -1,4 +1,6 @@
-#[![Build Status](https://travis-ci.org/xakep-sava/integrations.svg?branch=master)](https://travis-ci.org/xakep-sava/integrations) [![npm version](https://img.shields.io/npm/v/@sava.team/broid-schemas.svg?style=flat)](https://www.npmjs.com/package/@sava.team/broid-schemas) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/xakep-sava/integrations)
+[![Build Status](https://travis-ci.org/xakep-sava/integrations.svg?branch=master)](https://travis-ci.org/xakep-sava/integrations) [![npm version](https://img.shields.io/npm/v/@sava.team/broid-schemas.svg?style=flat)](https://www.npmjs.com/package/@sava.team/broid-schemas) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/xakep-sava/integrations)
+
+[![Build](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/sava)
 
 # Broid Schemas
 
