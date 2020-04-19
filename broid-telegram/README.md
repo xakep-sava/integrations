@@ -28,7 +28,7 @@ Integrations is an open source project providing a suite of Activity Streams 2 l
 > Connect your App to Multiple Messaging Channels with  One OpenSource Language.
 
 [![gitter](https://badges.gitter.im/savateam/community.svg)](https://gitter.im/savateam/community)
-[![slackin](https://img.shields.io/badge/site-sava.team-green?style=flat)](https://sava.team?utm_source=github&utm_medium=readme&utm_campaign=top&link=site)
+[![site](https://img.shields.io/badge/site-sava.team-green?style=flat)](https://sava.team?utm_source=github&utm_medium=readme&utm_campaign=top&link=site)
 
 ## Message types supported
 
