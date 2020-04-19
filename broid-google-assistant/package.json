@@ -1,21 +1,22 @@
 {
-  "name": "@broid/google-assistant",
-  "version": "2.1.0",
+  "name": "@sava.team/broid-google-assistant",
+  "version": "2.1.2",
   "main": "lib/core/index.js",
   "license": "AGPL-3.0+",
-  "author": "Broid Team <opensource@broid.ai> (https://broid.ai)",
+  "author": "SaVa Team <i@sava.team> (https://sava.team)",
   "description": "Convert Google Assistant messages into Activity Streams 2 with Broid Integration",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/broidHQ/integrations.git"
+    "url": "git+ssh://git@github.com:xakep-sava/integrations.git"
   },
   "bugs": {
-    "url": "https://github.com/broidHQ/integrations/issues"
+    "url": "https://github.com/xakep-sava/integrations/issues"
   },
-  "homepage": "https://github.com/broidHQ/integrations/tree/master/broid-google-assistant#readme",
+  "homepage": "https://github.com/xakep-sava/integrations/tree/master/broid-google-assistant#readme",
   "keywords": [
     "google assistant",
     "broid",
+    "sava",
     "activity",
     "strams",
     "activity streams 2",
@@ -40,34 +41,36 @@
     "release": "yarn run travis && yarn run build && npm publish --access public",
     "watch": "concurrently --kill-others \"yarn run lint:watch\" \"yarn run tsc:watch\""
   },
-  "devDependencies": {
-    "@types/bluebird": "^3.5.2",
-    "@types/bluebird-global": "^3.5.1",
-    "@types/node": "^7.0.12",
-    "@types/ramda": "^0.0.5",
-    "@types/uuid": "^3.0.0",
-    "ava": "^0.18.1",
-    "concurrently": "^3.1.0",
-    "copyfiles": "^1.2.0",
-    "nsp": "^2.6.3",
-    "nyc": "^10.1.2",
-    "sinon": "^1.17.7",
-    "tslint": "^4.3.1",
-    "tslint-eslint-rules": "^3.5.1",
-    "tslint-microsoft-contrib": "^4.0.1",
-    "typescript": "~2.2.2",
-    "watch": "^1.0.1"
-  },
   "dependencies": {
-    "@broid/schemas": "^1.0.1",
-    "@broid/utils": "^1.1.1",
+    "@sava.team/broid-schemas": "^1.1.7",
+    "@sava.team/broid-utils": "^1.2.2",
     "actions-on-google": "^1.0.5",
-    "bluebird": "^3.4.7",
-    "body-parser": "^1.16.0",
-    "express": "^4.14.0",
-    "ramda": "^0.23.0",
+    "ava": "^0.18.1",
+    "bluebird": "^3.7.2",
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "ramda": "^0.27.0",
+    "request": "^2.88.2",
+    "request-promise": "^4.2.5",
     "rxjs": "^5.0.2",
-    "uuid": "^3.1.0"
+    "sinon": "^9.0.2",
+    "uuid": "^7.0.3"
+  },
+  "devDependencies": {
+    "@types/bluebird": "^3.5.30",
+    "@types/bluebird-global": "^3.5.12",
+    "@types/node": "^13.13.0",
+    "@types/ramda": "^0.0.5",
+    "@types/uuid": "^7.0.2",
+    "concurrently": "^5.1.0",
+    "copyfiles": "^2.2.0",
+    "nsp": "^3.2.1",
+    "nyc": "^15.0.1",
+    "tslint": "^6.1.1",
+    "tslint-eslint-rules": "^5.4.0",
+    "tslint-microsoft-contrib": "^6.2.0",
+    "typescript": "^3.8.3",
+    "watch": "^1.0.2"
   },
   "ava": {
     "files": [

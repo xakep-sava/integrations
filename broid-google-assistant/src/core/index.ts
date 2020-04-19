@@ -2,5 +2,5 @@
 
 // Javascript import compatibility
 
-import { Adapter } from './Adapter';
-export = Adapter;
+import { Adapter } from './Adapter'
+export = Adapter
