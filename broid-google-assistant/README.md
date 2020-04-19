@@ -70,7 +70,7 @@ googleAssistant.connect()
 Google Assitant can also be used with your existing express setup.
 
 ```javascript
-const BroidGoogleAssistant = require('broid-google-assistant');
+const BroidGoogleAssistant = require('@sava.team/broid-google-assistant');
 const express = require("express");
 
 const googleAssistant = new BroidGoogleAssistant({
