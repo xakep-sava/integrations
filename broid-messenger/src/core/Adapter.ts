@@ -47,7 +47,7 @@ export class Adapter {
     this.logger = new Logger('adapter', this.logLevel)
     this.router = this.setupRouter()
     this.emitter = new EventEmitter()
-    this.versionAPI = 'v6.0'
+    this.versionAPI = 'v8.0'
 
     if (obj.http) {
       this.webhookServer = new WebHookServer(obj.http, this.router, this.logLevel)
