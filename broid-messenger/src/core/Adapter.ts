@@ -47,7 +47,7 @@ export class Adapter {
     this.logger = new Logger('adapter', this.logLevel)
     this.router = this.setupRouter()
     this.emitter = new EventEmitter()
-    this.versionAPI = 'v8.0'
+    this.versionAPI = 'v10.0'
 
     if (obj.http) {
       this.webhookServer = new WebHookServer(obj.http, this.router, this.logLevel)
@@ -179,8 +179,8 @@ export class Adapter {
           messageData
         )
 
-        const content: string = R.path(['object', 'content'], data) as string
-        const name: string = (R.path(['object', 'name'], data) as string) || content
+        let content: string = R.path(['object', 'content'], data) as string
+        let name: string = (R.path(['object', 'name'], data) as string) || content
         const attachments: any[] = (R.path(['object', 'attachment'], data) as any[]) || []
         const buttons = R.filter(
           (attachment: any) => attachment.type === 'Button' || attachment.type === 'Link',
@@ -192,6 +192,10 @@ export class Adapter {
           if (dataType === 'Video' && R.isEmpty(fButtons)) {
             messageData.message.text = concat([name || '', content || '', R.path(['object', 'url'], data)])
           } else {
+            if (dataType === 'Image') {
+              name = content = 'ᅠ'
+            }
+
             messageData.message.attachment = createCard(
               name,
               content,
@@ -294,6 +298,37 @@ export class Adapter {
     }
 
     return Promise.reject(new Error('The postback message cannot be empty.'))
+  }
+
+  private getLongTokenUser(appId: string = ''): Promise<object | Error> {
+    if (appId.length) {
+      this.logger.debug('getLongTokenUser', { appId })
+      return rp({
+        method: 'GET',
+        qs: {
+          fb_exchange_token: this.token,
+          client_secret: this.tokenSecret,
+          client_id: appId,
+          grant_type: 'fb_exchange_token'
+        },
+        uri: `https://graph.facebook.com/${this.versionAPI}/oauth/access_token`
+      }).then(() => ({ type: 'getLongTokenUser', serviceID: this.serviceId() }))
+    }
+
+    return Promise.reject(new Error('The app id cannot be empty.'))
+  }
+
+  private getLongTokenPage(userId: number = 0): Promise<object | Error> {
+    if (userId) {
+      this.logger.debug('getLongTokenPage', { userId })
+      return rp({
+        method: 'GET',
+        qs: { access_token: this.token },
+        uri: `https://graph.facebook.com/${this.versionAPI}/${userId}/accounts`
+      }).then(() => ({ type: 'getLongTokenPage', serviceID: this.serviceId() }))
+    }
+
+    return Promise.reject(new Error('The user id cannot be empty.'))
   }
 
   // Setup get_started bot
