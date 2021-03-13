@@ -312,7 +312,12 @@ export class Adapter {
           grant_type: 'fb_exchange_token'
         },
         uri: `https://graph.facebook.com/${this.versionAPI}/oauth/access_token`
-      }).then(() => ({ type: 'getLongTokenUser', serviceID: this.serviceId() }))
+      }).then(response => JSON.parse(response))
+        .then(({ data }) => ({
+          type: 'getLongTokenUser',
+          serviceID: this.serviceId(),
+          response: data
+        }))
     }
 
     return Promise.reject(new Error('The app id cannot be empty.'))
@@ -325,7 +330,13 @@ export class Adapter {
         method: 'GET',
         qs: { access_token: this.token },
         uri: `https://graph.facebook.com/${this.versionAPI}/${userId}/accounts`
-      }).then(() => ({ type: 'getLongTokenPage', serviceID: this.serviceId() }))
+      })
+        .then(response => JSON.parse(response))
+        .then(({ data }) => ({
+          type: 'getLongTokenPage',
+          serviceID: this.serviceId(),
+          response: data
+        }))
     }
 
     return Promise.reject(new Error('The user id cannot be empty.'))
