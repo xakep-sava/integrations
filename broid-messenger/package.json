@@ -1,6 +1,6 @@
 {
   "name": "@sava.team/broid-messenger",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "main": "lib/core/index.js",
   "license": "AGPL-3.0+",
   "author": "SaVa Team <i@sava.team> (https://sava.team)",

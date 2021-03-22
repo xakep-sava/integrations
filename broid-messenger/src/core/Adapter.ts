@@ -29,6 +29,7 @@ export class Adapter {
   private router: Router
   private serviceID: string
   private storeUsers: Map<string, object>
+  private connections: Map<string, object>
   private token: string | null
   private tokenSecret: string | null
   private consumerSecret: string | null
@@ -42,6 +43,7 @@ export class Adapter {
     this.tokenSecret = (obj && obj.tokenSecret) || null
     this.consumerSecret = (obj && obj.consumerSecret) || null
     this.storeUsers = new Map()
+    this.connections = new Map()
 
     this.parser = new Parser(this.serviceName(), this.serviceID, this.logLevel)
     this.logger = new Logger('adapter', this.logLevel)
@@ -99,6 +101,22 @@ export class Adapter {
     return Observable.of({ type: 'connected', serviceID: this.serviceId() })
   }
 
+  public addConnection(pageId: string, accessToken: string = '', additionalData: object = {}) {
+    this.connections.set(pageId, { accessToken, ...additionalData })
+  }
+
+  public getConnection(pageId: string): any {
+    return this.connections.size && this.connections.get(pageId) || null
+  }
+
+  public removeConnection(pageId: string) {
+    this.connections.delete(pageId)
+  }
+
+  public getConnections(): Map<string, object> {
+    return this.connections
+  }
+
   public disconnect(): Promise<null> {
     this.connected = false
     return Promise.resolve(null)
@@ -116,8 +134,13 @@ export class Adapter {
             }
             return Observable.from(messages)
           })
-          .mergeMap((message: any) =>
-            this.user(message.author).then(author => R.assoc('authorInformation', author, message))
+          .mergeMap((message: any) => {
+            const pageId = message.pageId || null
+            const connection = pageId && this.getConnection(pageId)
+            return this.user(message.author, 'first_name,last_name', true,
+              connection && connection.accessToken || null)
+              .then(author => R.assoc('authorInformation', author, message))
+            }
           )
           .mergeMap(normalized => this.parser.parse(normalized))
           .mergeMap(parsed => this.parser.validate(parsed))
@@ -141,7 +164,7 @@ export class Adapter {
       })
   }
 
-  public send(data: object, accessToken: any = null): Promise<object | Error> {
+  public send(data: object, pageId: any = null): Promise<object | Error> {
     this.logger.debug('sending', { message: data })
 
     return schemas(data, 'send').then(() => {
@@ -233,10 +256,12 @@ export class Adapter {
 
       if (!R.isEmpty(messageData)) {
         this.logger.debug('Message build', { message: messageData })
+        const connection = pageId && this.getConnection(pageId)
+
         return rp({
           json: messageData,
           method: 'POST',
-          qs: { access_token: accessToken || this.token },
+          qs: { access_token: connection && connection.accessToken || this.token },
           uri: `https://graph.facebook.com/${this.versionAPI}/me/messages`
         }).then(() => ({ type: 'sent', serviceID: this.serviceId() }))
       }
@@ -246,7 +271,7 @@ export class Adapter {
   }
 
   // Return user information
-  private user(id: string, fields: string = 'first_name,last_name', cache: boolean = true): Promise<object> {
+  private user(id: string, fields: string = 'first_name,last_name', cache: boolean = true, accessToken: any = null): Promise<object> {
     const key: string = `${id}${fields}`
     if (cache) {
       const data = this.storeUsers.get(key)
@@ -258,7 +283,7 @@ export class Adapter {
     const params: rp.OptionsWithUri = {
       json: true,
       method: 'GET',
-      qs: { access_token: this.token, fields },
+      qs: { access_token: accessToken || this.token, fields },
       uri: `https://graph.facebook.com/${this.versionAPI}/${id}`
     }
 
