@@ -59,6 +59,10 @@ export class Parser {
       type: 'Person'
     }
 
+    if (normalized.pageId) {
+      activitystreams.actor.botId = normalized.pageId
+    }
+
     activitystreams.target = {
       id: normalized.channel,
       name: normalized.channel,
@@ -127,6 +131,7 @@ export class Parser {
 
     const req = event.request
     const body = req.body
+    const pageId = body?.entry[0]?.id || null
 
     if (!body || R.isEmpty(body)) {
       return Promise.resolve(null)
@@ -138,6 +143,7 @@ export class Parser {
           if (data.message || data.postback) {
             if (data.postback) {
               return {
+                pageId,
                 attachments: [],
                 author: data.sender.id,
                 authorInformation: {},
@@ -151,6 +157,7 @@ export class Parser {
               }
             } else {
               return {
+                pageId,
                 attachments: data.message.attachments || [],
                 author: data.sender.id,
                 authorInformation: {},

@@ -227,10 +227,10 @@
   resolved "https://registry.yarnpkg.com/@istanbuljs/schema/-/schema-0.1.2.tgz#26520bf09abe4a5644cd5414e37125a8954241dd"
   integrity sha512-tsAQNx32a8CoFhjhijUIhI4kccIAgmGhy8LZMZgGfmXcpMbPRUqn5LWmgRttILi6yeGmBJd2xsPkFMs0PzgPCw==
 
-"@sava.team/broid-schemas@^1.1.7":
-  version "1.1.7"
-  resolved "https://registry.yarnpkg.com/@sava.team/broid-schemas/-/broid-schemas-1.1.7.tgz#5e93e0128f5e5dd2e04715f5bd8bbec575c0126b"
-  integrity sha512-oytbcMOv7E8FV8uKtd7P4DuGO950h9I6C5+ppA2xXu0VBlMbqoeM64kvxYipDf2Ci2nkBBYKjyABeqxfGAZmCA==
+"@sava.team/broid-schemas@^1.1.8":
+  version "1.1.8"
+  resolved "https://registry.yarnpkg.com/@sava.team/broid-schemas/-/broid-schemas-1.1.8.tgz#b0d5d3c98ac21f6c7ed2cdea64a1b6ed6f880550"
+  integrity sha512-l3hn+/BdN6RQfjlbWVnBQZU6DbRtp46r1jvW96CfEZdGsi2Y44JnjKJN4UU6fgP9OsmEKmEbjkE1VF1t17oXxw==
   dependencies:
     ajv "^5.5.2"
 

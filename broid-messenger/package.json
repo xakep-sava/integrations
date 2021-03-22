@@ -1,6 +1,6 @@
 {
   "name": "@sava.team/broid-messenger",
-  "version": "2.2.9",
+  "version": "2.3.0",
   "main": "lib/core/index.js",
   "license": "AGPL-3.0+",
   "author": "SaVa Team <i@sava.team> (https://sava.team)",
@@ -42,7 +42,7 @@
     "watch": "concurrently --kill-others \"yarn run lint:watch\" \"yarn run tsc:watch\""
   },
   "dependencies": {
-    "@sava.team/broid-schemas": "^1.1.7",
+    "@sava.team/broid-schemas": "^1.1.8",
     "@sava.team/broid-utils": "^1.2.2",
     "ava": "^0.18.1",
     "bluebird": "^3.7.2",

@@ -141,7 +141,7 @@ export class Adapter {
       })
   }
 
-  public send(data: object): Promise<object | Error> {
+  public send(data: object, accessToken: any = null): Promise<object | Error> {
     this.logger.debug('sending', { message: data })
 
     return schemas(data, 'send').then(() => {
@@ -236,7 +236,7 @@ export class Adapter {
         return rp({
           json: messageData,
           method: 'POST',
-          qs: { access_token: this.token },
+          qs: { access_token: accessToken || this.token },
           uri: `https://graph.facebook.com/${this.versionAPI}/me/messages`
         }).then(() => ({ type: 'sent', serviceID: this.serviceId() }))
       }
