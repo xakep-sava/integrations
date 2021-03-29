@@ -325,27 +325,27 @@ export class Adapter {
     return Promise.reject(new Error('The postback message cannot be empty.'))
   }
 
-  private getLongTokenUser(appId: string = ''): Promise<object | Error> {
-    if (appId.length) {
-      this.logger.debug('getLongTokenUser', { appId })
+  private getLongTokenUser(appId: string = '', appSecretKey: string = ''): Promise<object | Error> {
+    if (appId.length && appSecretKey.length) {
+      this.logger.debug('getLongTokenUser', { appId, appSecretKey })
       return rp({
         method: 'GET',
         qs: {
           fb_exchange_token: this.token,
-          client_secret: this.tokenSecret,
           client_id: appId,
+          client_secret: appSecretKey,
           grant_type: 'fb_exchange_token'
         },
         uri: `https://graph.facebook.com/${this.versionAPI}/oauth/access_token`
       }).then(response => JSON.parse(response))
-        .then(({ data }) => ({
+        .then(response => ({
           type: 'getLongTokenUser',
           serviceID: this.serviceId(),
-          response: data
+          response
         }))
     }
 
-    return Promise.reject(new Error('The app id cannot be empty.'))
+    return Promise.reject(new Error('The app id or app secret key cannot be empty.'))
   }
 
   private getLongTokenPage(userId: number = 0): Promise<object | Error> {
