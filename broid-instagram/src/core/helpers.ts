@@ -62,14 +62,12 @@ export function createButtons(buttons: any[]): any[] {
           type: 'postback'
         }
       } else if (button.mediaType === 'text/html') {
-        // facebook type: web_url, account_link
         return {
           title,
           type: 'web_url',
           url: button.url
         }
       } else if (button.mediaType === 'audio/telephone-event') {
-        // facebook type: phone_number
         return {
           payload: button.url,
           title,
