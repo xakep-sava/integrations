@@ -1,7 +1,7 @@
 {
-  "name": "@sava.team/broid-messenger",
+  "name": "@sava.team/broid-instagram",
   "version": "2.3.2",
-  "main": "lib/core/index.js",
+  "main": "lib/index.js",
   "license": "AGPL-3.0+",
   "author": "SaVa Team <i@sava.team> (https://sava.team)",
   "description": "Convert Instagram Messenger messages into Activity Streams 2 with Broid Integration",
