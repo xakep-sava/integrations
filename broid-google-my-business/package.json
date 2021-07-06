@@ -1,0 +1,88 @@
+{
+  "name": "@sava.team/broid-google-my-business",
+  "version": "1.0.1",
+  "main": "lib/core/index.js",
+  "license": "AGPL-3.0+",
+  "author": "SaVa Team <i@sava.team> (https://sava.team)",
+  "description": "Convert Google My Business messages into Activity Streams 2 with Broid Integration",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com:xakep-sava/integrations.git"
+  },
+  "bugs": {
+    "url": "https://github.com/xakep-sava/integrations/issues"
+  },
+  "homepage": "https://github.com/xakep-sava/integrations/tree/master/broid-google-my-business#readme",
+  "keywords": [
+    "google my business",
+    "broid",
+    "sava",
+    "activity",
+    "strams",
+    "activity streams 2",
+    "messaging",
+    "chat",
+    "bot"
+  ],
+  "engines": {
+    "node": ">=6.0.0"
+  },
+  "scripts": {
+    "build": "yarn run clean && yarn run copy && yarn run copy:config && tsc -p tsconfig.json",
+    "clean": "rm -rf lib && rm -rf tsconfig.json && rm -rf tslint.json",
+    "copy": "copyfiles -u 1 src/**/*.json lib/",
+    "copy:config": "cp ../_tools/tsconfig.json . && cp ../_tools/tslint.json .",
+    "lint": "yarn run copy:config && tslint -c tslint.json src/**/*.ts",
+    "lint:watch": "watch 'yarn run lint' src",
+    "nsp-check": "nsp check --warn-only -o summary",
+    "test": "yarn run lint && yarn run build && nyc ava --verbose",
+    "travis": "yarn run test",
+    "tsc:watch": "yarn run build && tsc --watch",
+    "release": "yarn run travis && yarn run build && npm publish --access public",
+    "watch": "concurrently --kill-others \"yarn run lint:watch\" \"yarn run tsc:watch\""
+  },
+  "dependencies": {
+    "@sava.team/broid-schemas": "^1.1.8",
+    "@sava.team/broid-utils": "^1.2.2",
+    "ava": "^0.18.1",
+    "bluebird": "^3.7.2",
+    "body-parser": "^1.19.0",
+    "eventemitter3": "^4.0.0",
+    "express": "^4.17.1",
+    "ramda": "^0.27.0",
+    "request": "^2.88.2",
+    "request-promise": "^4.2.5",
+    "rxjs": "^5.0.2",
+    "sinon": "^9.0.2",
+    "uuid": "^7.0.3"
+  },
+  "devDependencies": {
+    "@types/bluebird": "^3.5.30",
+    "@types/bluebird-global": "^3.5.12",
+    "@types/node": "^13.13.0",
+    "@types/ramda": "^0.0.5",
+    "@types/uuid": "^7.0.2",
+    "concurrently": "^5.1.0",
+    "copyfiles": "^2.2.0",
+    "nsp": "^3.2.1",
+    "nyc": "^15.0.1",
+    "tslint": "^6.1.1",
+    "tslint-eslint-rules": "^5.4.0",
+    "tslint-microsoft-contrib": "^6.2.0",
+    "typescript": "^3.8.3",
+    "watch": "^1.0.2"
+  },
+  "ava": {
+    "files": [
+      "lib/test/**/*.js"
+    ],
+    "concurrency": 5,
+    "failFast": true,
+    "tap": true
+  },
+  "nyc": {
+    "exclude": [
+      "dist"
+    ]
+  }
+}
