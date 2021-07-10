@@ -52,15 +52,8 @@ export class Parser {
     const activitystreams = this.createActivityStream(normalized)
     activitystreams.actor = {
       id: R.path(['authorInformation', 'id'], normalized),
-      name: concat([
-        R.path(['authorInformation', 'first_name'], normalized),
-        R.path(['authorInformation', 'last_name'], normalized)
-      ]),
+      name: R.path(['authorInformation', 'name'], normalized),
       type: 'Person'
-    }
-
-    if (normalized.pageId) {
-      activitystreams.actor.botId = normalized.pageId
     }
 
     activitystreams.target = {
@@ -129,45 +122,29 @@ export class Parser {
   public normalize(event: IWebHookEvent): Promise<IActivityStream> {
     this.logger.debug('Event received to normalize')
 
-    const req = event.request
+    const req = event.response.req
     const body = req.body
-    const pageId = body?.entry[0]?.id || null
 
-    if (!body || R.isEmpty(body)) {
+    if (!body || R.isEmpty(body) || !body.entry[0] || !body.entry[0].messaging) {
       return Promise.resolve(null)
     }
 
     const messages = R.map(
       (entry: any) =>
         R.map((data: any) => {
-          if (data.message || data.postback) {
-            if (data.postback) {
-              return {
-                pageId,
-                attachments: [],
-                author: data.sender.id,
-                authorInformation: {},
-                channel: data.sender.id,
-                content: data.postback.payload || null,
-                createdTimestamp: data.timestamp,
-                mid: data.timestamp.toString(),
-                quickReply: [],
-                seq: data.timestamp.toString(),
-                title: data.postback.title || null
-              }
-            } else {
-              return {
-                pageId,
-                attachments: data.message.attachments || [],
-                author: data.sender.id,
-                authorInformation: {},
-                channel: data.sender.id,
-                content: data.message.text || null,
-                createdTimestamp: data.timestamp,
-                mid: data.message.mid,
-                quickReply: data.message.quick_reply || [],
-                seq: data.message.seq
-              }
+          if (data.message) {
+            return {
+              author: data.sender.id,
+              attachments: [],
+              authorInformation: {
+                id: data.sender.id || 0,
+                name: 'Test'
+              },
+              channel: data.sender.id,
+              content: data.message.text || null,
+              createdTimestamp: data.timestamp,
+              mid: data.message.mid,
+              quickReply: data.message.quick_reply || [],
             }
           }
           return null
@@ -220,14 +197,14 @@ export class Parser {
         }
         return null
       })
-    } else if (attachmentType === 'location') {
-      return Promise.resolve({
-        id: this.createIdentifier(),
-        latitude: R.path(['payload', 'coordinates', 'lat'], attachment),
-        longitude: R.path(['payload', 'coordinates', 'long'], attachment),
-        name: attachment.title,
-        type: 'Place'
-      } as IASObject) // tslint:disable-line:no-object-literal-type-assertion
+    // } else if (attachmentType === 'location') {
+    //   return Promise.resolve({
+    //     id: this.createIdentifier(),
+    //     latitude: R.path(['payload', 'coordinates', 'lat'], attachment),
+    //     longitude: R.path(['payload', 'coordinates', 'long'], attachment),
+    //     name: attachment.title,
+    //     type: 'Place'
+    //   } as IASObject) // tslint:disable-line:no-object-literal-type-assertion
     }
     // TODO
     // else if (attachmentType === 'template') {
