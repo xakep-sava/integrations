@@ -49,7 +49,7 @@ export class Adapter {
     this.logger = new Logger('adapter', this.logLevel)
     this.router = this.setupRouter()
     this.emitter = new EventEmitter()
-    this.versionAPI = 'v10.0'
+    this.versionAPI = 'v11.0'
 
     if (obj.http) {
       this.webhookServer = new WebHookServer(obj.http, this.router, this.logLevel)
@@ -125,23 +125,16 @@ export class Adapter {
   // Listen 'message' event from Instagram
   public listen(): Observable<object> {
     return Observable.fromEvent(this.emitter, 'message')
-      .switchMap(value => {
+      .switchMap((value) => {
         return Observable.of(value)
           .mergeMap((event: IWebHookEvent) => this.parser.normalize(event))
           .mergeMap((messages: any) => {
             if (!messages || R.isEmpty(messages)) {
               return Observable.empty()
             }
+            console.log('messages = ' + messages)
             return Observable.from(messages)
           })
-          .mergeMap((message: any) => {
-            const pageId = message.pageId || null
-            const connection = pageId && this.getConnection(pageId)
-            return this.user(message.author, 'first_name,last_name', true,
-              connection && connection.accessToken || null)
-              .then(author => R.assoc('authorInformation', author, message))
-            }
-          )
           .mergeMap(normalized => this.parser.parse(normalized))
           .mergeMap(parsed => this.parser.validate(parsed))
           .mergeMap(validated => {
@@ -164,16 +157,20 @@ export class Adapter {
       })
   }
 
-  public send(data: object, pageId: any = null): Promise<object | Error> {
+  public send(data: object): Promise<object | Error> {
     this.logger.debug('sending', { message: data })
 
     return schemas(data, 'send').then(() => {
       const toID: string = (R.path(['to', 'id'], data) as string) || (R.path(['to', 'name'], data) as string)
+      console.log("toID = " + toID)
       const dataType: string = R.path(['object', 'type'], data) as string
+      console.log("dataType = " + dataType)
 
       let messageData: any = {
         recipient: { id: toID }
       }
+
+      console.log("messageData = " + messageData)
 
       if (dataType === 'Collection') {
         const items: any = R.filter((item: any) => item.type === 'Image', R.path(['object', 'items'], data) as any)
@@ -253,133 +250,133 @@ export class Adapter {
       if (R.isEmpty(R.path(['message', 'attachment'], messageData))) {
         delete messageData.message.attachment
       }
+      //
+      // if (!R.isEmpty(messageData)) {
+      //   this.logger.debug('Message build', { message: messageData })
+      //   const connection = pageId && this.getConnection(pageId)
+      //
+      //   return rp({
+      //     json: messageData,
+      //     method: 'POST',
+      //     qs: { access_token: connection && connection.accessToken || this.token },
+      //     uri: `https://graph.facebook.com/${this.versionAPI}/me/messages`
+      //   }).then(() => ({ type: 'sent', serviceID: this.serviceId() }))
+      // }
 
-      if (!R.isEmpty(messageData)) {
-        this.logger.debug('Message build', { message: messageData })
-        const connection = pageId && this.getConnection(pageId)
-
-        return rp({
-          json: messageData,
-          method: 'POST',
-          qs: { access_token: connection && connection.accessToken || this.token },
-          uri: `https://graph.facebook.com/${this.versionAPI}/me/messages`
-        }).then(() => ({ type: 'sent', serviceID: this.serviceId() }))
-      }
-
-      return Promise.reject(new Error('Only Note, Image, Video, Audio and Document are supported.'))
+      return Promise.reject(new Error('Only Note is supported.'))
     })
   }
 
   // Return user information
-  private user(id: string, fields: string = 'first_name,last_name', cache: boolean = true, accessToken: any = null): Promise<object> {
-    const key: string = `${id}${fields}`
-    if (cache) {
-      const data = this.storeUsers.get(key)
-      if (data) {
-        return Promise.resolve(data)
-      }
-    }
-
-    const params: rp.OptionsWithUri = {
-      json: true,
-      method: 'GET',
-      qs: { access_token: accessToken || this.token, fields },
-      uri: `https://graph.facebook.com/${this.versionAPI}/${id}`
-    }
-
-    // tslint:disable-line:no-trailing-whitespace
-    // @ts-ignore
-    return rp(params)
-      .catch(err => {
-        if (err.message && err.message.includes('nonexisting field')) {
-          params.qs.fields = 'name'
-          return rp(params)
-        }
-
-        throw err
-      })
-      .then((data: any) => {
-        data.id = data.id || id
-        if (!data.first_name && data.name) {
-          data.first_name = data.name
-          data.last_name = ''
-        }
-
-        this.storeUsers.set(key, data)
-        return data
-      })
-  }
-
-  // Setting up getting started
-  private setupGetStarted(message: string = '/start'): Promise<object | Error> {
-    if (message.length) {
-      this.logger.debug('setupGetStarted', { message })
-      return rp({
-        json: { get_started: { payload: message } },
-        method: 'POST',
-        qs: { access_token: this.token },
-        uri: `https://graph.facebook.com/${this.versionAPI}/me/messenger_profile`
-      }).then(() => ({ type: 'setupGetStarted', serviceID: this.serviceId() }))
-    }
-
-    return Promise.reject(new Error('The postback message cannot be empty.'))
-  }
-
-  private getLongTokenUser(appId: string = '', appSecretKey: string = ''): Promise<object | Error> {
-    if (appId.length && appSecretKey.length) {
-      this.logger.debug('getLongTokenUser', { appId, appSecretKey })
-      return rp({
-        method: 'GET',
-        qs: {
-          fb_exchange_token: this.token,
-          client_id: appId,
-          client_secret: appSecretKey,
-          grant_type: 'fb_exchange_token'
-        },
-        uri: `https://graph.facebook.com/${this.versionAPI}/oauth/access_token`
-      }).then(response => JSON.parse(response))
-        .then(response => ({
-          type: 'getLongTokenUser',
-          serviceID: this.serviceId(),
-          response
-        }))
-    }
-
-    return Promise.reject(new Error('The app id or app secret key cannot be empty.'))
-  }
-
-  private getLongTokenPage(userId: number = 0): Promise<object | Error> {
-    if (userId) {
-      this.logger.debug('getLongTokenPage', { userId })
-      return rp({
-        method: 'GET',
-        qs: { access_token: this.token },
-        uri: `https://graph.facebook.com/${this.versionAPI}/${userId}/accounts`
-      })
-        .then(response => JSON.parse(response))
-        .then(({ data }) => ({
-          type: 'getLongTokenPage',
-          serviceID: this.serviceId(),
-          response: data
-        }))
-    }
-
-    return Promise.reject(new Error('The user id cannot be empty.'))
-  }
-
-  // Setup get_started bot
-  private subscribeApp(pageID: number, fields: string = 'messages'): Promise<object | Error> {
-    if (pageID && fields.length) {
-      this.logger.debug('subscribeApp', { pageID, fields })
-      return rp({
-        method: 'POST',
-        qs: { access_token: this.token, subscribed_fields: fields },
-        uri: `https://graph.facebook.com/${this.versionAPI}/${pageID}/subscribed_apps`
-      }).then(() => ({ type: 'subscribeApp', serviceID: this.serviceId() }))
-    }
-
-    return Promise.reject(new Error('Page ID or subscribe fields cannot be empty.'))
-  }
+  // private user(id: string, fields: string = 'first_name,last_name', cache: boolean = true, accessToken: any = null): Promise<object> {
+  //   const key: string = `${id}${fields}`
+  //   if (cache) {
+  //     const data = this.storeUsers.get(key)
+  //     if (data) {
+  //       return Promise.resolve(data)
+  //     }
+  //   }
+  //
+  //   const params: rp.OptionsWithUri = {
+  //     json: true,
+  //     method: 'GET',
+  //     qs: { access_token: accessToken || this.token, fields },
+  //     uri: `https://graph.facebook.com/${this.versionAPI}/${id}`
+  //   }
+  //
+  //   // tslint:disable-line:no-trailing-whitespace
+  //   // @ts-ignore
+  //   return rp(params)
+  //     .catch(err => {
+  //       if (err.message && err.message.includes('nonexisting field')) {
+  //         params.qs.fields = 'name'
+  //         return rp(params)
+  //       }
+  //
+  //       throw err
+  //     })
+  //     .then((data: any) => {
+  //       data.id = data.id || id
+  //       if (!data.first_name && data.name) {
+  //         data.first_name = data.name
+  //         data.last_name = ''
+  //       }
+  //
+  //       this.storeUsers.set(key, data)
+  //       return data
+  //     })
+  // }
+  //
+  // // Setting up getting started
+  // private setupGetStarted(message: string = '/start'): Promise<object | Error> {
+  //   if (message.length) {
+  //     this.logger.debug('setupGetStarted', { message })
+  //     return rp({
+  //       json: { get_started: { payload: message } },
+  //       method: 'POST',
+  //       qs: { access_token: this.token },
+  //       uri: `https://graph.facebook.com/${this.versionAPI}/me/messenger_profile`
+  //     }).then(() => ({ type: 'setupGetStarted', serviceID: this.serviceId() }))
+  //   }
+  //
+  //   return Promise.reject(new Error('The postback message cannot be empty.'))
+  // }
+  //
+  // private getLongTokenUser(appId: string = '', appSecretKey: string = ''): Promise<object | Error> {
+  //   if (appId.length && appSecretKey.length) {
+  //     this.logger.debug('getLongTokenUser', { appId, appSecretKey })
+  //     return rp({
+  //       method: 'GET',
+  //       qs: {
+  //         fb_exchange_token: this.token,
+  //         client_id: appId,
+  //         client_secret: appSecretKey,
+  //         grant_type: 'fb_exchange_token'
+  //       },
+  //       uri: `https://graph.facebook.com/${this.versionAPI}/oauth/access_token`
+  //     }).then(response => JSON.parse(response))
+  //       .then(response => ({
+  //         type: 'getLongTokenUser',
+  //         serviceID: this.serviceId(),
+  //         response
+  //       }))
+  //   }
+  //
+  //   return Promise.reject(new Error('The app id or app secret key cannot be empty.'))
+  // }
+  //
+  // private getLongTokenPage(userId: number = 0): Promise<object | Error> {
+  //   if (userId) {
+  //     this.logger.debug('getLongTokenPage', { userId })
+  //     return rp({
+  //       method: 'GET',
+  //       qs: { access_token: this.token },
+  //       uri: `https://graph.facebook.com/${this.versionAPI}/${userId}/accounts`
+  //     })
+  //       .then(response => JSON.parse(response))
+  //       .then(({ data }) => ({
+  //         type: 'getLongTokenPage',
+  //         serviceID: this.serviceId(),
+  //         response: data
+  //       }))
+  //   }
+  //
+  //   return Promise.reject(new Error('The user id cannot be empty.'))
+  // }
+  //
+  // // Setup get_started bot
+  // private subscribeApp(pageID: number, fields: string = 'messages'): Promise<object | Error> {
+  //   if (pageID && fields.length) {
+  //     this.logger.debug('subscribeApp', { pageID, fields })
+  //     return rp({
+  //       method: 'POST',
+  //       qs: { access_token: this.token, subscribed_fields: fields },
+  //       uri: `https://graph.facebook.com/${this.versionAPI}/${pageID}/subscribed_apps`
+  //     }).then(() => ({ type: 'subscribeApp', serviceID: this.serviceId() }))
+  //   }
+  //
+  //   return Promise.reject(new Error('Page ID or subscribe fields cannot be empty.'))
+  // }
 
   private setupRouter(): Router {
     const router = Router()
