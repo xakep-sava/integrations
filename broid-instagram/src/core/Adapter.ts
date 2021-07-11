@@ -161,16 +161,13 @@ export class Adapter {
     this.logger.debug('sending', { message: data })
 
     return schemas(data, 'send').then(() => {
+      console.log(data)
       const toID: string = (R.path(['to', 'id'], data) as string) || (R.path(['to', 'name'], data) as string)
-      console.log("toID = " + toID)
       const dataType: string = R.path(['object', 'type'], data) as string
-      console.log("dataType = " + dataType)
 
       let messageData: any = {
         recipient: { id: toID }
       }
-
-      console.log("messageData = " + messageData)
 
       if (dataType === 'Collection') {
         const items: any = R.filter((item: any) => item.type === 'Image', R.path(['object', 'items'], data) as any)
