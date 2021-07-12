@@ -132,7 +132,6 @@ export class Adapter {
             if (!messages || R.isEmpty(messages)) {
               return Observable.empty()
             }
-            console.log('messages = ' + messages)
             return Observable.from(messages)
           })
           .mergeMap(normalized => this.parser.parse(normalized))
@@ -161,7 +160,6 @@ export class Adapter {
     this.logger.debug('sending', { message: data })
 
     return schemas(data, 'send').then(() => {
-      console.log(data)
       const toID: string = (R.path(['to', 'id'], data) as string) || (R.path(['to', 'name'], data) as string)
       const dataType: string = R.path(['object', 'type'], data) as string
 
