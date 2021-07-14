@@ -135,7 +135,7 @@ export class Parser {
           if (data.message) {
             return {
               author: data.sender.id,
-              attachments: [],
+              attachments: data.message.attachments.payload.url || [],
               authorInformation: {
                 id: data.sender.id || 0,
                 name: 'Test'
@@ -145,8 +145,25 @@ export class Parser {
               createdTimestamp: data.timestamp,
               mid: data.message.mid,
               quickReply: data.message.quick_reply || [],
-            }
+            };
           }
+
+          if(data.reaction {
+            return {
+              author: data.sender.id,
+              attachments: [],
+              authorInformation: {
+                id: data.sender.id || 0,
+                name: 'Test'
+              },
+              channel: data.sender.id,
+              content: data.reaction.emoji || null,
+              createdTimestamp: data.timestamp,
+              mid: data.reaction.mid,
+              quickReply: [],
+            }
+          })
+
           return null
         }, entry.messaging),
       body.entry
